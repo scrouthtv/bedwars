@@ -6,7 +6,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class GiveIngot {
+public class IngotCommands {
 	public static boolean giveIngot(final CommandSender sender, final Command cmd, final String[] args) {
 		if (args.length == 1) {
 			if (!(sender instanceof Player)) {
