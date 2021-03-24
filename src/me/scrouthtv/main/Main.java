@@ -1,6 +1,9 @@
 package me.scrouthtv.main;
 
-import me.scrouthtv.commands.GiveIngot;
+import me.scrouthtv.commands.IngotCommands;
+import me.scrouthtv.commands.MapCommands;
+import me.scrouthtv.maps.IMapManager;
+import me.scrouthtv.maps.DimAdapter;
 import me.scrouthtv.shop.Shop;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -11,22 +14,32 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin implements CommandExecutor {
 	
-	private static JavaPlugin instance;
+	private static Main instance;
+	
+	private IMapManager mapManager;
 	
 	/**
 	 * instance returns the plugin instance that was the last to be enabled.
 	 */
-	public static JavaPlugin instance() {
+	public static Main instance() {
 		return instance;
 	}
 
 	@Override
 	public void onEnable() {
+		saveDefaultConfig();
+		
 		getServer().getConsoleSender().sendMessage(ChatColor.BLUE + "Starting Bedwars 1");
 		
 		Bukkit.getPluginManager().registerEvents(new Shop(), this);
 		
 		instance = this;
+		
+		mapManager = new DimAdapter();
+	}
+	
+	public IMapManager getMapManager() {
+		return mapManager;
 	}
 	
 	@Override
@@ -38,7 +51,11 @@ public class Main extends JavaPlugin implements CommandExecutor {
 	public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
 		switch (label) {
 			case "give-ingot":
-				return GiveIngot.giveIngot(sender, command, args);
+				return IngotCommands.giveIngot(sender, command, args);
+			case "build-bedwars":
+				return MapCommands.buildBedwars(sender, command, args);
+			case "list-maps":
+				return MapCommands.listMaps(sender, command, args);
 		}
 		return false;
 	}

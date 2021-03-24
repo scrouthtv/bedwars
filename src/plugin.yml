@@ -3,6 +3,11 @@ version: 0.1
 author: scrouthtv
 main: me.scrouthtv.main.Main
 api-version: 1.16
+depend: [ Multiverse-Core ]
 commands:
   give-ingot:
     description: Gives the issuing player a resource ingot.
+  build-bedwars:
+    description: Creates a new BedWars map for building and teleports the issuing player to it.
+  list-maps:
+    description: Lists all available BedWars maps.
