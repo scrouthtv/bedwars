@@ -4,6 +4,7 @@ import me.scrouthtv.main.Main;
 import me.scrouthtv.maps.IMap;
 import me.scrouthtv.maps.DimAdapter;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -39,6 +40,7 @@ public class MapCommands {
 		if (map != null && p != null) {
 			p.sendMessage("Wooosh...");
 			map.playerJoin(p);
+			p.setGameMode(GameMode.CREATIVE);
 			return true;
 	 	}
 		
