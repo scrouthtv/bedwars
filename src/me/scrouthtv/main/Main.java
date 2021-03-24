@@ -10,12 +10,23 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin implements CommandExecutor {
+	
+	private static JavaPlugin instance;
+	
+	/**
+	 * instance returns the plugin instance that was the last to be enabled.
+	 */
+	public static JavaPlugin instance() {
+		return instance;
+	}
 
 	@Override
 	public void onEnable() {
 		getServer().getConsoleSender().sendMessage(ChatColor.BLUE + "Starting Bedwars 1");
 		
 		Bukkit.getPluginManager().registerEvents(new Shop(), this);
+		
+		instance = this;
 	}
 	
 	@Override
