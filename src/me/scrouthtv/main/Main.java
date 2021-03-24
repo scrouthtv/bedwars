@@ -36,6 +36,8 @@ public class Main extends JavaPlugin implements CommandExecutor {
 		instance = this;
 		
 		mapManager = new DimAdapter();
+		
+		mapManager.loadConfig(getConfig());
 	}
 	
 	public IMapManager getMapManager() {
@@ -45,6 +47,9 @@ public class Main extends JavaPlugin implements CommandExecutor {
 	@Override
 	public void onDisable() {
 		getServer().getConsoleSender().sendMessage(ChatColor.BLUE + "Stopping Bedwars 1");
+		
+		mapManager.storeConfig(getConfig());
+		saveConfig();
 	}
 	
 	@Override
