@@ -8,6 +8,8 @@ public class ShopTrade {
 	private int costAmount;
 	private ItemStack product;
 	
+	public static final ShopTrade EMPTY_TRADE = new ShopTrade(null, 0, null);
+	
 	public ShopTrade(Ingot cost, int costAmount, ItemStack product) {
 		this.cost = cost;
 		this.costAmount = costAmount;

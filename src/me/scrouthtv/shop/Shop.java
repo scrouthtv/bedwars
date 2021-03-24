@@ -12,7 +12,7 @@ public class Shop implements Listener {
 		
 		IShop shop = new FastShop();
 		
-		shop.setTrades(ShopSets.BasicShopSet);
+		shop.setCategories(new ShopCategory[]{ShopSets.Blocks, ShopSets.Combat});
 		
 		ev.getPlayer().openInventory(shop.getInventory());
 	}
