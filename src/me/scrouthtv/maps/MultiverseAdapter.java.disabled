@@ -1,0 +1,106 @@
+package me.scrouthtv.maps;
+
+import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import org.bukkit.*;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+
+public class MultiverseAdapter implements IMapManager {
+	private static final MultiverseCore multiverse = (MultiverseCore) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Core");
+	private static final MVWorldManager worldManager = multiverse.getMVWorldManager();
+	
+	private List<MultiverseMap> maps = new ArrayList<>();
+	private final JavaPlugin p;
+	
+	private static final String MAP_LIST_IDENT = "maps";
+	
+	public MultiverseAdapter(JavaPlugin p) {
+		this.p = p;
+		FileConfiguration config = p.getConfig();
+		List<String> mc = config.getStringList(MAP_LIST_IDENT);
+		
+		System.out.println("Read these maps from the config:");
+		for (final String map : mc)
+			maps.add(new MultiverseMap(worldManager.getMVWorld(map)));
+		System.out.println(maps);
+	}
+	
+	public void storeConfig() {
+		System.out.println("Stored these maps to the config:");
+		List<String> mc = new ArrayList<>();
+		for (MultiverseMap m : maps) mc.add(m.getWorld().getName());
+		System.out.println(mc);
+		p.getConfig().set(MAP_LIST_IDENT, mc);
+	}
+	
+	@Override
+	public List<IMap> listMaps() {
+		return new ArrayList<>(maps);
+	}
+	
+	@Override
+	@Nullable
+	public IMap createNewMap(final String name) {
+		boolean ok = worldManager.addWorld(name, World.Environment.NORMAL, "0", WorldType.FLAT, false, "3;minecraft:air;1");
+		if (!ok) return null;
+		
+		MultiverseWorld w = worldManager.getMVWorld(name);
+		
+		w.setSpawnLocation(new Location(w.getCBWorld(), 0, 120, 0));
+		Location base = new Location(w.getCBWorld(), 0, 118, 0);
+		base.getBlock().setType(Material.STONE);
+		
+		return new MultiverseMap(w);
+	}
+	
+	@Nullable
+	@Override
+	public IMap getByName(final String name) {
+		for (MultiverseMap m : maps) {
+			if (m.getWorld().getName() == name) {
+				return m;
+			}
+		}
+		
+		return null;
+	}
+	
+	public class MultiverseMap implements IMap {
+		
+		private final MultiverseWorld w;
+		
+		private MultiverseMap(final MultiverseWorld w) {
+			this.w = w;
+		}
+		
+		protected MultiverseWorld getWorld() {
+			return w;
+		}
+		
+		@Override
+		@Nullable
+		public IMap cloneMap(String target) {
+			boolean ok = worldManager.cloneWorld(w.getName(), target);
+			if (!ok) return null;
+			
+			return new MultiverseMap(worldManager.getMVWorld(target));
+		}
+		
+		@Override
+		public boolean playerJoin(final Player p) {
+			return p.teleport(w.getSpawnLocation());
+		}
+		
+		@Override
+		public String toString() {
+			return w.getName();
+		}
+	}
+}
