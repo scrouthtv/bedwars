@@ -1,9 +1,6 @@
 package me.scrouthtv.maps;
 
-import org.bukkit.Bukkit;
-import org.bukkit.World;
-import org.bukkit.WorldCreator;
-import org.bukkit.WorldType;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
@@ -27,6 +24,9 @@ public class DimAdapter implements IMapManager {
 		creator.type(WorldType.FLAT);
 		
 		final World w = Bukkit.createWorld(creator);
+		w.setSpawnLocation(new Location(w, 0.5, 120, 0.5));
+		(new Location(w, 0, 118, 0)).getBlock().setType(Material.STONE);
+		
 		final Dim d = new Dim(w);
 		maps.add(d);
 		
@@ -60,7 +60,7 @@ public class DimAdapter implements IMapManager {
 		
 		@Override
 		public boolean playerJoin(final Player p) {
-			throw new RuntimeException("not impl");
+			return p.teleport(w.getSpawnLocation());
 		}
 		
 		@Override
