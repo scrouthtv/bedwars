@@ -2,3 +2,7 @@ name: Bedwars
 version: 0.1
 author: scrouthtv
 main: me.scrouthtv.main.Main
+api-version: 1.16
+commands:
+  give-ingot:
+    description: Gives the issuing player a resource ingot.
