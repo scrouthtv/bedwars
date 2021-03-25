@@ -4,6 +4,7 @@ import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
@@ -45,28 +46,38 @@ public class DimAdapter implements IMapManager {
 		return null;
 	}
 	
+	@Nullable
+	@Override
+	public IMap getByUUID(final String uuid) {
+		return getByWorld(Bukkit.getWorld(UUID.fromString(uuid)));
+	}
+	
+	@Nonnull
+	public IMap getByWorld(final World world) {
+		for (Dim map : maps) {
+			if (map.getWorld().equals(world))
+				return map;
+		}
+		
+		Dim d = new Dim(world);
+		maps.add(d);
+		return d;
+	}
+	
 	@Override
 	public void loadConfig(final FileConfiguration config) {
 		List<String> mapNames = config.getStringList(MAP_LIST_IDENT);
-		System.out.println("Read these maps:");
 		for (String mapName : mapNames) {
-			System.out.println(mapName);
 			World w = Bukkit.createWorld(new WorldCreator(mapName));
-			//World w = Bukkit.getWorld(mapName);
-			System.out.println(w);
 			if (w != null) this.maps.add(new Dim(w));
 		}
-		System.out.println("Available maps:");
-		System.out.println(Bukkit.getWorlds());
 	}
 	
 	@Override
 	public void storeConfig(final FileConfiguration config) {
 		List<String> mapNames = new ArrayList<>();
-		System.out.println("Writing these maps:");
 		for (Dim map : maps) {
 			mapNames.add(map.w.getName());
-			System.out.println(map.w.getName());
 		}
 		config.set(MAP_LIST_IDENT, mapNames);
 	}
@@ -92,8 +103,18 @@ public class DimAdapter implements IMapManager {
 		}
 		
 		@Override
+		public World getWorld() {
+			return w;
+		}
+		
+		@Override
 		public String toString() {
 			return w.getName();
+		}
+		
+		@Override
+		public String UUID() {
+			return w.getUID().toString();
 		}
 		
 		@Override

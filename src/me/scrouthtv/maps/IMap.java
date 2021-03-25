@@ -1,5 +1,6 @@
 package me.scrouthtv.maps;
 
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 public interface IMap {
@@ -15,9 +16,19 @@ public interface IMap {
 	public boolean playerJoin(Player p);
 	
 	/**
+	 * getWorld returns the underlying Bukkit world.
+	 */
+	public World getWorld();
+	
+	/**
 	 * All IMap implementations should feature a sane toString() representation
 	 * for both debugging and user experience.
 	 * @return a basic string representation of this map.
 	 */
 	public String toString();
+	
+	/**
+	 * UUID shall return a unique string that can be used to identify the map.
+	 */
+	public String UUID();
 }
