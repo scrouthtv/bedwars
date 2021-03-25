@@ -38,6 +38,7 @@ public class BedwarsBuildingItems implements Listener {
 	
 	public void exitTools() {
 		HandlerList.unregisterAll(this);
+		p.getInventory().clear();
 	}
 	
 	@EventHandler
