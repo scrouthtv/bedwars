@@ -81,7 +81,9 @@ public class DimAdapter implements IMapManager {
 		
 		@Override
 		public IMap cloneMap(final String target) {
-			throw new RuntimeException("not impl");
+			final Dim d = new Dim(DimCloner.cloneDim(w, target));
+			DimAdapter.this.maps.add(d);
+			return d;
 		}
 		
 		@Override

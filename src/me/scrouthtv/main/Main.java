@@ -54,13 +54,16 @@ public class Main extends JavaPlugin implements CommandExecutor {
 	
 	@Override
 	public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
-		switch (label) {
+		// Using command.getLabel() allows us to match /bedwars:xyz as well
+		switch (command.getLabel()) {
 			case "give-ingot":
 				return IngotCommands.giveIngot(sender, command, args);
 			case "build-bedwars":
 				return MapCommands.buildBedwars(sender, command, args);
 			case "list-maps":
 				return MapCommands.listMaps(sender, command, args);
+			case "clone-map":
+				return MapCommands.cloneMap(sender, command, args);
 		}
 		return false;
 	}

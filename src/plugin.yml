@@ -11,3 +11,5 @@ commands:
     description: Creates a new BedWars map for building and teleports the issuing player to it.
   list-maps:
     description: Lists all available BedWars maps.
+  clone-map:
+    description: Clones a map.

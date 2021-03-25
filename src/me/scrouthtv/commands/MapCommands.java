@@ -47,6 +47,27 @@ public class MapCommands {
 		return false;
 	}
 	
+	public static boolean cloneMap(final CommandSender sender, final Command cmd, final String[] args) {
+		if (args.length != 2) {
+			sender.sendMessage(ChatColor.RED + "Please specify two map names.");
+			return false;
+		} else {
+			IMap map = Main.instance().getMapManager().getByName(args[0]);
+			if (map == null) {
+				sender.sendMessage(ChatColor.RED + "Invalid map " + args[0]);
+				return false;
+			}
+			
+			IMap clone = map.cloneMap(args[1]);
+			if (clone == null) {
+				sender.sendMessage(ChatColor.RED + "Cloning failed");
+			} else {
+				sender.sendMessage(ChatColor.GREEN + "Success!");
+			}
+			return true;
+		}
+	}
+	
 	public static boolean listMaps(final CommandSender sender, final Command cmd, final String[] args) {
 		List<IMap> maps = Main.instance().getMapManager().listMaps();
 		sender.sendMessage(String.format("%d known maps:", maps.size()));
