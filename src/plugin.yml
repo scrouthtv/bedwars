@@ -11,3 +11,8 @@ commands:
     description: Creates a new BedWars map for building and teleports the issuing player to it.
   list-maps:
     description: Lists all available BedWars maps.
+  bw-start:
+    description: Creates a new BedWars game from an existing map.
+    usage: "Usage: /<command> <map-name> <game-name>"
+  bw-join:
+    description: Makes this player join a running BedWars game.

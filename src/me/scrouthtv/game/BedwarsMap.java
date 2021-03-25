@@ -12,7 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @SerializableAs("BedwarsMap")
-public class BedwarsMap implements ConfigurationSerializable {
+public class BedwarsMap implements ConfigurationSerializable, Cloneable {
 	
 	private static final String TEAM_SIZE_KEY_IDENT = "team-size";
 	private static final String TEAM_NUMBER_KEY_IDENT = "number-of-teams";
@@ -39,6 +39,10 @@ public class BedwarsMap implements ConfigurationSerializable {
 		teamSize = 4;
 		teamNumber = 4;
 		MapRegistry.registerMap(this);
+	}
+	
+	public BedwarsGame createGame(String name) {
+		return new BedwarsGame(this, name);
 	}
 	
 	@Nonnull
