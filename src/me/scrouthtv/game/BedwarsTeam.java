@@ -3,7 +3,41 @@ package me.scrouthtv.game;
 import org.bukkit.DyeColor;
 
 public class BedwarsTeam {
-	private BedwarsPlayer[] players;
+	private final BedwarsPlayer[] players;
+	
+	public BedwarsTeam(final int slots) {
+		players = new BedwarsPlayer[slots];
+	}
+	
+	public int getCurrentPlayers() {
+		int count = 0;
+		for (BedwarsPlayer p : players) {
+			if (p != null) count++;
+		}
+		
+		return count;
+	}
+	
+	/**
+	 * Join the player into the first available slots.
+	 * If no slots are available, false is returned.
+	 *
+	 * @return whether joining was successful.
+	 */
+	public boolean playerJoin(BedwarsPlayer p) {
+		for (int i = 0; i < players.length; i++) {
+			if (players[i] == null) {
+				players[i] = p;
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public int getMaxPlayers() {
+		return players.length;
+	}
 	
 	public static final DyeColor[] colorOrder = {
 			DyeColor.BLUE, DyeColor.RED,
