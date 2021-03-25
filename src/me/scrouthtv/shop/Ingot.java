@@ -1,9 +1,14 @@
 package me.scrouthtv.shop;
 
 import org.bukkit.Material;
+import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+@SerializableAs("bedwars-resource")
 public enum Ingot {
 	
 	INGOT_BRONZE(Material.BRICK, "Bronze"),
@@ -25,4 +30,27 @@ public enum Ingot {
 		i.setItemMeta(meta);
 		return i;
 	}
+	
+	/**
+	 * toString creates an ingot-unique string identifier for this ingot.
+	 */
+	@Nonnull
+	public String toString() {
+		return name;
+	}
+	
+	/**
+	 * fromString returns the ingot that is associated with the given string.
+	 * @param s a string representation of an ingot, obtained by calling toString() on it.
+	 */
+	@Nullable
+	public static Ingot fromString(String s) {
+		for (final Ingot i : values()) {
+			if (i.toString().equals(s))
+				return i;
+		}
+		
+		return null;
+	}
+	
 }
