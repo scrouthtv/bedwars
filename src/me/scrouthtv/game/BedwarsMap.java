@@ -14,31 +14,52 @@ import java.util.Map;
 @SerializableAs("BedwarsMap")
 public class BedwarsMap implements ConfigurationSerializable {
 	
+	private static final String TEAM_SIZE_KEY_IDENT = "team-size";
+	private static final String TEAM_NUMBER_KEY_IDENT = "number-of-teams";
+	private static final String MAP_UUID_KEY_IDENT = "map";
+	private static final String SPAWNER_IDENT = "spawners";
+
 	static {
 		ConfigurationSerialization.registerClass(BedwarsMap.class);
 	}
+
+	private int teamSize;
+	private int teamNumber;
+	@Nullable
+	private IMap map;
 	
 	public BedwarsMap(@Nullable IMap map) {
 		this();
 		this.map = map;
 	}
-	
 	/**
 	 * Create a new map with default settings.
 	 */
 	private BedwarsMap() {
 		teamSize = 4;
 		teamNumber = 4;
+		MapRegistry.registerMap(this);
 	}
 	
-	private static final String TEAM_SIZE_KEY_IDENT = "team-size";
-	private static final String TEAM_NUMBER_KEY_IDENT = "number-of-teams";
-	private static final String MAP_UUID_KEY_IDENT = "map";
-	private static final String SPAWNER_IDENT = "spawners";
-	
-	private int teamSize;
-	private int teamNumber;
-	@Nullable private IMap map;
+	@Nonnull
+	public static BedwarsMap deserialize(final Map<String, Object> map) {
+		BedwarsMap b = new BedwarsMap();
+		
+		if (map.get(TEAM_SIZE_KEY_IDENT) instanceof Integer)
+			b.teamSize = (Integer) map.get(TEAM_SIZE_KEY_IDENT);
+		else
+			System.out.println("team size not an integer: " + map.get(TEAM_SIZE_KEY_IDENT));
+		
+		if (map.get(TEAM_NUMBER_KEY_IDENT) instanceof Integer)
+			b.teamNumber = (Integer) map.get(TEAM_NUMBER_KEY_IDENT);
+		else
+			System.out.println("team number not an integer: " + map.get(TEAM_NUMBER_KEY_IDENT));
+		
+		b.map = Main.instance().getMapManager().getByUUID((String) map.get(MAP_UUID_KEY_IDENT));
+		System.out.println("Got this map: " + b.map);
+		
+		return b;
+	}
 	
 	public int getTeamSize() {
 		return teamSize;
@@ -77,25 +98,5 @@ public class BedwarsMap implements ConfigurationSerializable {
 		result.put(MAP_UUID_KEY_IDENT, map.UUID());
 		
 		return result;
-	}
-	
-	@Nonnull
-	public static BedwarsMap deserialize(final Map<String, Object> map) {
-		BedwarsMap b = new BedwarsMap();
-		
-		if (map.get(TEAM_SIZE_KEY_IDENT) instanceof Integer)
-			b.teamSize = (Integer) map.get(TEAM_SIZE_KEY_IDENT);
-		else
-			System.out.println("team size not an integer: " + map.get(TEAM_SIZE_KEY_IDENT));
-		
-		if (map.get(TEAM_NUMBER_KEY_IDENT) instanceof Integer)
-			b.teamNumber = (Integer) map.get(TEAM_NUMBER_KEY_IDENT);
-		else
-			System.out.println("team number not an integer: " + map.get(TEAM_NUMBER_KEY_IDENT));
-		
-		b.map = Main.instance().getMapManager().getByUUID((String) map.get(MAP_UUID_KEY_IDENT));
-		System.out.println("Got this map: " + b.map);
-		
-		return b;
 	}
 }
