@@ -64,6 +64,8 @@ public class Main extends JavaPlugin implements CommandExecutor {
 				return MapCommands.listMaps(sender, command, args);
 			case "clone-map":
 				return MapCommands.cloneMap(sender, command, args);
+			case "configure-map":
+				return MapCommands.configureMap(sender, command, args);
 		}
 		return false;
 	}

@@ -13,3 +13,5 @@ commands:
     description: Lists all available BedWars maps.
   clone-map:
     description: Clones a map.
+  configure-map:
+    description: Configures this BedWars map.

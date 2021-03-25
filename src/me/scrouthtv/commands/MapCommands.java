@@ -1,10 +1,12 @@
 package me.scrouthtv.commands;
 
+import me.scrouthtv.game.BedwarsMapCreatorGui;
 import me.scrouthtv.main.Main;
 import me.scrouthtv.maps.IMap;
 import me.scrouthtv.maps.DimAdapter;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.block.data.type.Bed;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -60,7 +62,7 @@ public class MapCommands {
 			
 			IMap clone = map.cloneMap(args[1]);
 			if (clone == null) {
-				sender.sendMessage(ChatColor.RED + "Cloning failed");
+				sender.sendMessage(ChatColor.RED + "Cloning failed.");
 			} else {
 				sender.sendMessage(ChatColor.GREEN + "Success!");
 			}
@@ -74,5 +76,23 @@ public class MapCommands {
 		for (IMap m : maps)
 			sender.sendMessage(m.toString());
 		return true;
+	}
+	
+	public static boolean configureMap(final CommandSender sender, final Command command, final String[] args) {
+		if (!(sender instanceof Player)) {
+			sender.sendMessage(ChatColor.RED + "This command can only be used by a player.");
+			return false;
+		}
+		
+		Player p = (Player) sender;
+		
+		if (args.length == 0) {
+			BedwarsMapCreatorGui gui = new BedwarsMapCreatorGui(Main.instance().getMapManager().getByWorld(p.getWorld()));
+			gui.show(p);
+			return true;
+		} else {
+			sender.sendMessage(ChatColor.RED + "Expected zero arguments.");
+			return false;
+		}
 	}
 }
