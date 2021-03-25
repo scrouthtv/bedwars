@@ -14,9 +14,22 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
+/**
+ * BedwarsMapCreatorGui is used for the process of *creating* a BedwarsMap
+ * from an IMap. Keep in mind that it cannot be used for loading a BedwarsMap
+ * that already exists (e.g. in a config file).
+ *
+ * After the player finalizes the setup (clicks the OK button), the callback
+ * method is called.
+ */
 public class BedwarsMapCreatorGui implements Listener {
 	private BedwarsMap map;
 	private Inventory inv;
+	private CreatorFinishCallback callback;
+	
+	public interface CreatorFinishCallback {
+		void setupFinished(BedwarsMap map);
+	}
 	
 	private static final ItemStack SAVE_ITEM = new ItemStack(Material.WRITABLE_BOOK);
 	private static final ItemStack INCREMENT = new ItemStack(Material.PLAYER_HEAD);
@@ -28,7 +41,7 @@ public class BedwarsMapCreatorGui implements Listener {
 		ItemMeta meta;
 		
 		meta = SAVE_ITEM.getItemMeta();
-		meta.setDisplayName("OK =>");
+		meta.setDisplayName("Create map =>");
 		SAVE_ITEM.setItemMeta(meta);
 		
 		SkullMeta s = (SkullMeta) INCREMENT.getItemMeta();
@@ -74,6 +87,10 @@ public class BedwarsMapCreatorGui implements Listener {
 		inv.setItem(8 + 3*9, SAVE_ITEM);
 	}
 	
+	public void setCallback(final CreatorFinishCallback callback) {
+		this.callback = callback;
+	}
+	
 	@EventHandler
 	public void onInvClick(InventoryClickEvent ev) {
 		if (ev.getInventory() != inv) {
@@ -85,6 +102,7 @@ public class BedwarsMapCreatorGui implements Listener {
 		if (ev.getSlot() == 8 + 3*9) {
 			p.closeInventory();
 			p.sendMessage(ChatColor.GREEN + "Okay!");
+			if (callback != null) callback.setupFinished(map);
 		} else if (ev.getSlot() >= 0*9 && ev.getSlot() < 1*9) {
 			// Increment something:
 			boolean ok = false;
@@ -141,6 +159,9 @@ public class BedwarsMapCreatorGui implements Listener {
 		int newAmount = map.getTeamNumber() + amount;
 		if (newAmount <= 0) {
 			map.setTeamNumber(1);
+			return false;
+		} else if (newAmount > 16) {
+			map.setTeamNumber(16);
 			return false;
 		} else {
 			map.setTeamNumber(newAmount);
