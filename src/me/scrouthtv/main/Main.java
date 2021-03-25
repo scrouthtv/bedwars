@@ -1,5 +1,6 @@
 package me.scrouthtv.main;
 
+import me.scrouthtv.commands.BedwarsCommands;
 import me.scrouthtv.commands.IngotCommands;
 import me.scrouthtv.commands.MapCommands;
 import me.scrouthtv.maps.IMapManager;
@@ -62,6 +63,10 @@ public class Main extends JavaPlugin implements CommandExecutor {
 				return MapCommands.buildBedwars(sender, command, args);
 			case "list-maps":
 				return MapCommands.listMaps(sender, command, args);
+			case "bw-create":
+				return BedwarsCommands.bwCreate(sender, command, args);
+			case "bw-join":
+				return BedwarsCommands.bwJoin(sender, command, args);
 		}
 		return false;
 	}
