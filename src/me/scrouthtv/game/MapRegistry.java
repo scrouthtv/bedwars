@@ -1,5 +1,6 @@
 package me.scrouthtv.game;
 
+import me.scrouthtv.main.Main;
 import me.scrouthtv.maps.IMap;
 
 import javax.annotation.Nullable;
@@ -12,6 +13,11 @@ public class MapRegistry {
 	@Nullable
 	public static BedwarsMap getMap(IMap m) {
 		return maps.get(m);
+	}
+	
+	@Nullable
+	public static BedwarsMap getMap(String name) {
+		return maps.get(Main.instance().getMapManager().getByName(name));
 	}
 	
 	static void registerMap(BedwarsMap m) {
