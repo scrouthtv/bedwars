@@ -30,6 +30,8 @@ public class BuildProcedure implements BedwarsMapCreatorGui.CreatorFinishCallbac
 	public BuildProcedure(final Player p, final IMap map) {
 		this.p = p;
 		this.map = map;
+		
+		Main.instance().getBuilders().registerBuilder(p, this);
 	}
 	
 	public void start() {
