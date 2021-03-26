@@ -1,7 +1,10 @@
 package me.scrouthtv.maps;
 
+import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 public interface IMap {
 	IMap cloneMap(String target);
@@ -31,4 +34,14 @@ public interface IMap {
 	 * UUID shall return a unique string that can be used to identify the map.
 	 */
 	public String UUID();
+	
+	/**
+	 * vecInWorld places returns the location of a vector in this map.
+	 */
+	public Location vecInWorld(final Vector v);
+	
+	/**
+	 * blockInWorld returns the block at the specified position.
+	 */
+	public Block blockInWorld(final Vector v);
 }

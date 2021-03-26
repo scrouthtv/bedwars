@@ -1,8 +1,10 @@
 package me.scrouthtv.maps;
 
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -115,6 +117,16 @@ public class DimAdapter implements IMapManager {
 		@Override
 		public String UUID() {
 			return w.getUID().toString();
+		}
+		
+		@Override
+		public Location vecInWorld(final Vector v) {
+			return new Location(w, v.getX(), v.getY(), v.getZ());
+		}
+		
+		@Override
+		public Block blockInWorld(final Vector v) {
+			return w.getBlockAt(v.getBlockX(), v.getBlockY(), v.getBlockZ());
 		}
 		
 		@Override
