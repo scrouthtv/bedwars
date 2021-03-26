@@ -3,7 +3,7 @@ package me.scrouthtv.commands;
 import me.scrouthtv.game.BedwarsGame;
 import me.scrouthtv.game.BedwarsMap;
 import me.scrouthtv.game.GameRegistry;
-import me.scrouthtv.game.MapRegistry;
+import me.scrouthtv.main.Main;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -11,13 +11,13 @@ import org.bukkit.entity.Player;
 
 public class BedwarsCommands {
 	
-	public static boolean bwStart(final CommandSender sender, final Command cmd, final String[] args) {
+	public static boolean bwCreate(final CommandSender sender, final Command cmd, final String[] args) {
 		if (args.length != 2) {
 			sender.sendMessage(ChatColor.RED + "Expected two parameters.");
 			return false;
 		}
 		
-		BedwarsMap map = MapRegistry.getMap(args[0]);
+		BedwarsMap map = Main.instance().getMapRegistry().getMap(args[0]);
 		BedwarsGame game = map.createGame(args[1]);
 		
 		return true;

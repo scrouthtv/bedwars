@@ -3,6 +3,7 @@ package me.scrouthtv.main;
 import me.scrouthtv.commands.BedwarsCommands;
 import me.scrouthtv.commands.IngotCommands;
 import me.scrouthtv.commands.MapCommands;
+import me.scrouthtv.game.MapRegistry;
 import me.scrouthtv.maps.IMapManager;
 import me.scrouthtv.maps.DimAdapter;
 import me.scrouthtv.shop.Shop;
@@ -18,6 +19,8 @@ public class Main extends JavaPlugin implements CommandExecutor {
 	private static Main instance;
 	
 	private IMapManager mapManager;
+	private MapRegistry mapRegistry;
+	private BuilderRegistry builders;
 	
 	/**
 	 * instance returns the plugin instance that was the last to be enabled.
@@ -37,12 +40,22 @@ public class Main extends JavaPlugin implements CommandExecutor {
 		instance = this;
 		
 		mapManager = new DimAdapter();
-		
 		mapManager.loadConfig(getConfig());
+		
+		mapRegistry = new MapRegistry();
+		builders = new BuilderRegistry();
 	}
 	
 	public IMapManager getMapManager() {
 		return mapManager;
+	}
+	
+	public MapRegistry getMapRegistry() {
+		return mapRegistry;
+	}
+	
+	public BuilderRegistry getBuilders() {
+		return builders;
 	}
 	
 	@Override
@@ -61,6 +74,8 @@ public class Main extends JavaPlugin implements CommandExecutor {
 				return IngotCommands.giveIngot(sender, command, args);
 			case "build-bedwars":
 				return MapCommands.buildBedwars(sender, command, args);
+			case "save-bedwars":
+				return MapCommands.saveBedwars(sender, command, args);
 			case "list-maps":
 				return MapCommands.listMaps(sender, command, args);
 			case "bw-create":

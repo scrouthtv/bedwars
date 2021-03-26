@@ -9,6 +9,8 @@ commands:
     description: Gives the issuing player a resource ingot.
   build-bedwars:
     description: Creates a new BedWars map for building and teleports the issuing player to it.
+  save-bedwars:
+    description: Finishes the building of this BedWars map and stores it to the disk.
   list-maps:
     description: Lists all available BedWars maps.
   bw-start:
