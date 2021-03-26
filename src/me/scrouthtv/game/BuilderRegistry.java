@@ -17,4 +17,8 @@ public class BuilderRegistry {
 	void registerBuilder(final Player p, final BuildProcedure proc) {
 		builders.put(p, proc);
 	}
+	
+	void unregisterBuilder(final Player p) {
+		builders.remove(p);
+	}
 }

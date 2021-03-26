@@ -31,6 +31,9 @@ public class BuildProcedure implements BedwarsMapCreatorGui.CreatorFinishCallbac
 	
 	private BuildStage stage = BuildStage.STAGE_INVALID;
 	
+	/**
+	 * Starts the building of a new bedwars map based on a builder and world.
+	 */
 	public BuildProcedure(final Player p, final IMap map) {
 		this.p = p;
 		this.map = map;
@@ -38,6 +41,22 @@ public class BuildProcedure implements BedwarsMapCreatorGui.CreatorFinishCallbac
 		Main.instance().getBuilders().registerBuilder(p, this);
 		
 		stage = BuildStage.STAGE_INIT;
+	}
+	
+	/**
+	 * Allows to go back to an already finished map and change some things afterwards.
+	 * Currently, it only goes back to the building stage (step 6).
+	 *
+	 * The bwmap instance returned at the end is the same as this one.
+	 */
+	public BuildProcedure(final Player p, BedwarsMap bwmap) {
+		this.p = p;
+		this.map = bwmap.getMap();
+		this.bwmap = bwmap;
+		
+		Main.instance().getBuilders().registerBuilder(p, this);
+		
+		stage = BuildStage.STAGE_BUILDING;
 	}
 	
 	public void start() {
@@ -64,8 +83,13 @@ public class BuildProcedure implements BedwarsMapCreatorGui.CreatorFinishCallbac
 		// 3. Create a BedwarsMap:
 		this.bwmap = map;
 		
+		startBuilding();
+	}
+	
+	public void startBuilding() {
 		// 4. Teleport the player to it:
 		p.teleport(this.map.getWorld().getSpawnLocation());
+		p.sendMessage("Setting you to creative");
 		p.setGameMode(GameMode.CREATIVE);
 		
 		// 5. Give the player the building tools:
@@ -99,10 +123,19 @@ public class BuildProcedure implements BedwarsMapCreatorGui.CreatorFinishCallbac
 		p.setGameMode(GameMode.SURVIVAL);
 		p.teleport(Bukkit.getWorld("world").getSpawnLocation());
 		
+		Main.instance().getBuilders().unregisterBuilder(p);
+		
+		Main.instance().getMapRegistry().printMaps();
+		
 		return bwmap;
 	}
 	
-	public void setBedLocation(int team, Vector loc) {
+	/**
+	 * Sets the bed location of a specified team.
+	 * The position can be set to null to indicate that the bed hasn't been
+	 * placed.
+	 */
+	public void setBedLocation(int team, @Nullable Vector loc) {
 		if (stage != BuildStage.STAGE_BUILDING) return;
 		
 		bwmap.setBedLocation(team, loc);

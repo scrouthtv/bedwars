@@ -2,6 +2,7 @@ package me.scrouthtv.commands;
 
 import me.scrouthtv.game.BedwarsMap;
 import me.scrouthtv.game.BuildProcedure;
+import me.scrouthtv.game.BuilderRegistry;
 import me.scrouthtv.main.Main;
 import me.scrouthtv.maps.IMap;
 import org.bukkit.ChatColor;
@@ -20,19 +21,13 @@ public class MapCommands {
 		IMap map;
 		Player p;
 		if (args.length == 1) {
-			map = Main.instance().getMapManager().getByName(args[0]);
-			
-			if (map == null) {
-				System.out.println("Map doesn't exist, creating it.");
-				map = Main.instance().getMapManager().createNewMap(args[0]);
-			}
-			
 			if (sender instanceof Player) {
-				p = (Player) sender;
+				buildBW((Player) sender, args[0]);
 			} else {
 				sender.sendMessage(ChatColor.RED + "Please specify a player.");
 				return false;
 			}
+			
 		} else if (args.length == 0) {
 			sender.sendMessage(ChatColor.RED + "Please specify a map.");
 			return false;
@@ -41,13 +36,32 @@ public class MapCommands {
 			return false;
 		}
 		
-		if (map != null && p != null) {
-			BuildProcedure proc = new BuildProcedure(p, map);
+		return false;
+	}
+	
+	private static boolean buildBW(final Player p, final String map) {
+		Main.instance().getMapRegistry().printMaps();
+		
+		// First test if the bwmap already exists and they just want to edit it:
+		BedwarsMap bwmap = Main.instance().getMapRegistry().getMap(map);
+		if (bwmap != null) {
+			System.out.println("resuming building an existing map");
+			BuildProcedure proc = new BuildProcedure(p, bwmap);
+			proc.startBuilding();
+			return true;
+		} else {
+			// bwmap does not exist, create a new one:
+			IMap imap = Main.instance().getMapManager().getByName(map);
+			
+			if (imap == null) {
+				System.out.println("Map doesn't exist, creating it.");
+				imap = Main.instance().getMapManager().createNewMap(map);
+			}
+			
+			BuildProcedure proc = new BuildProcedure(p, imap);
 			proc.start();
 			return true;
-	 	}
-		
-		return false;
+		}
 	}
 	
 	public static boolean listMaps(final CommandSender sender, final Command cmd, final String[] args) {
