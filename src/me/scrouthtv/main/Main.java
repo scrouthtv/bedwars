@@ -3,6 +3,7 @@ package me.scrouthtv.main;
 import me.scrouthtv.commands.BedwarsCommands;
 import me.scrouthtv.commands.IngotCommands;
 import me.scrouthtv.commands.MapCommands;
+import me.scrouthtv.game.BedwarsIngotSpawner;
 import me.scrouthtv.game.MapRegistry;
 import me.scrouthtv.maps.IMapManager;
 import me.scrouthtv.maps.DimAdapter;
@@ -12,6 +13,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin implements CommandExecutor {
@@ -28,7 +30,12 @@ public class Main extends JavaPlugin implements CommandExecutor {
 	public static Main instance() {
 		return instance;
 	}
-
+	
+	@Override
+	public void onLoad() {
+		ConfigurationSerialization.registerClass(BedwarsIngotSpawner.class, "bedwars-ingot-spawner");
+	}
+	
 	@Override
 	public void onEnable() {
 		saveDefaultConfig();

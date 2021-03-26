@@ -3,6 +3,7 @@ package me.scrouthtv.game;
 import me.scrouthtv.main.IConfigurable;
 import me.scrouthtv.main.Main;
 import me.scrouthtv.maps.IMap;
+import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import javax.annotation.Nullable;
@@ -35,9 +36,11 @@ public class MapRegistry implements IConfigurable {
 		System.out.println(config.getStringList(MAP_LIST_IDENT));
 		
 		for (String uuid : config.getStringList(MAP_LIST_IDENT)) {
-			Map<String, Object> group = (Map<String, Object>) config.get(uuid);
+			MemorySection group = (MemorySection) config.get(uuid);
 			IMap map = Main.instance().getMapManager().getByUUID((String) group.get(MAP_UUID_IDENT));
-			BedwarsMap bwmap = BedwarsMap.deserialize((Map<String, Object>) group.get(BWMAP_IDENT));
+			
+			MemorySection mapData = (MemorySection) group.get(BWMAP_IDENT);
+			BedwarsMap bwmap = BedwarsMap.deserialize(mapData.getValues(true));
 			maps.put(map, bwmap);
 		}
 	}
@@ -47,7 +50,7 @@ public class MapRegistry implements IConfigurable {
 		for (Map.Entry<IMap, BedwarsMap> map : maps.entrySet()) {
 			System.out.println(map.getKey());
 			System.out.println(map.getKey().getWorld().getName() + " - " + map.getKey().getWorld().getUID());
-			System.out.println(String.format(" %d x %d", map.getValue().getTeamNumber(), map.getValue().getTeamSize()));
+			map.getValue().print();
 		}
 		System.out.println(" ========================== ");
 	}

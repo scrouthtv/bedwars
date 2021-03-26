@@ -118,4 +118,11 @@ public class BedwarsMap implements ConfigurationSerializable, Cloneable {
 		
 		return result;
 	}
+	
+	public void print() {
+		System.out.println(String.format(" %d x %d", getTeamNumber(), getTeamSize()));
+		System.out.println(" " + spawners.size() + " spawners at");
+		for (BedwarsIngotSpawner bwis : spawners)
+			System.out.println(" - " + bwis.getLocation());
+	}
 }

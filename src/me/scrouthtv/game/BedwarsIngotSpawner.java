@@ -11,7 +11,6 @@ import javax.annotation.Nullable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-@SerializableAs("bedwars-ingot-spawner")
 public class BedwarsIngotSpawner implements ConfigurationSerializable {
 	
 	private static final String LOCATION_IDENT = "loc";
@@ -23,10 +22,6 @@ public class BedwarsIngotSpawner implements ConfigurationSerializable {
 	private final Ingot resource;
 	private int tickSpeed;
 	private int amount;
-	
-	static {
-		ConfigurationSerialization.registerClass(BedwarsIngotSpawner.class);
-	}
 	
 	BedwarsIngotSpawner(Vector loc, Ingot resource) {
 		this.loc = loc;
@@ -58,8 +53,8 @@ public class BedwarsIngotSpawner implements ConfigurationSerializable {
 		Vector loc;
 		Ingot i;
 		
-		if (map.get(LOCATION_IDENT) instanceof Vector)
-			loc = (Vector) map.get(LOCATION_IDENT);
+		if (map.containsKey(LOCATION_IDENT))
+			loc = Vector.deserialize((Map<String, Object>) map.get(LOCATION_IDENT));
 		else {
 			System.out.println("Invalid location: " + map.get(LOCATION_IDENT));
 			return null;
@@ -82,5 +77,9 @@ public class BedwarsIngotSpawner implements ConfigurationSerializable {
 			System.out.println("Invalid amount: " + map.get(AMOUNT_IDENT));
 		
 		return s;
+	}
+	
+	public Vector getLocation() {
+		return loc;
 	}
 }
