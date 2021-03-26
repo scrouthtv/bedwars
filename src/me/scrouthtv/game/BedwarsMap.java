@@ -8,7 +8,9 @@ import org.bukkit.configuration.serialization.SerializableAs;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @SerializableAs("BedwarsMap")
@@ -25,20 +27,27 @@ public class BedwarsMap implements ConfigurationSerializable, Cloneable {
 
 	private int teamSize;
 	private int teamNumber;
-	@Nullable
+	@Nonnull
 	private IMap map;
 	
-	public BedwarsMap(@Nullable IMap map) {
-		this();
-		this.map = map;
-	}
+	private List<BedwarsIngotSpawner> spawners = new ArrayList<>();
+	
 	/**
 	 * Create a new map with default settings.
 	 */
-	private BedwarsMap() {
+	public BedwarsMap(@Nonnull IMap map) {
 		teamSize = 4;
 		teamNumber = 4;
-		MapRegistry.registerMap(this);
+		this.map = map;
+		
+		Main.instance().getMapRegistry().registerMap(this);
+	}
+	
+	public void NOPROD_changeValues() {
+		teamSize = 2;
+		teamNumber = 8;
+		spawners.add(new BedwarsIngotSpawner());
+		spawners.add(new BedwarsIngotSpawner());
 	}
 	
 	public BedwarsGame createGame(String name) {
@@ -47,7 +56,9 @@ public class BedwarsMap implements ConfigurationSerializable, Cloneable {
 	
 	@Nonnull
 	public static BedwarsMap deserialize(final Map<String, Object> map) {
-		BedwarsMap b = new BedwarsMap();
+		IMap imap = Main.instance().getMapManager().getByUUID((String) map.get(MAP_UUID_KEY_IDENT));
+		BedwarsMap b = new BedwarsMap(imap);
+		System.out.println("Got this map: " + b.map);
 		
 		if (map.get(TEAM_SIZE_KEY_IDENT) instanceof Integer)
 			b.teamSize = (Integer) map.get(TEAM_SIZE_KEY_IDENT);
@@ -59,8 +70,8 @@ public class BedwarsMap implements ConfigurationSerializable, Cloneable {
 		else
 			System.out.println("team number not an integer: " + map.get(TEAM_NUMBER_KEY_IDENT));
 		
-		b.map = Main.instance().getMapManager().getByUUID((String) map.get(MAP_UUID_KEY_IDENT));
-		System.out.println("Got this map: " + b.map);
+		Object spawners = map.get(SPAWNER_IDENT);
+		System.out.println(spawners);
 		
 		return b;
 	}
@@ -81,7 +92,7 @@ public class BedwarsMap implements ConfigurationSerializable, Cloneable {
 		this.teamNumber = teamNumber;
 	}
 	
-	@Nullable
+	@Nonnull
 	public IMap getMap() {
 		return map;
 	}
@@ -97,9 +108,10 @@ public class BedwarsMap implements ConfigurationSerializable, Cloneable {
 	public Map<String, Object> serialize() {
 		Map<String, Object> result = new LinkedHashMap<>();
 		
-		result.put(TEAM_SIZE_KEY_IDENT, "team-size");
-		result.put(TEAM_NUMBER_KEY_IDENT, "number-of-teams");
+		result.put(TEAM_SIZE_KEY_IDENT, teamSize);
+		result.put(TEAM_NUMBER_KEY_IDENT, teamNumber);
 		result.put(MAP_UUID_KEY_IDENT, map.UUID());
+		result.put(SPAWNER_IDENT, spawners);
 		
 		return result;
 	}
