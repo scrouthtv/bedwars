@@ -3,6 +3,7 @@ package me.scrouthtv.game;
 import me.scrouthtv.main.Main;
 import me.scrouthtv.maps.IMap;
 import me.scrouthtv.shop.Ingot;
+import me.scrouthtv.utils.ArrayUtil;
 import me.scrouthtv.utils.BlockUtil;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.Bed;
@@ -25,18 +26,19 @@ public class BedwarsMap implements ConfigurationSerializable, Cloneable {
 	private static final String TEAM_NUMBER_KEY_IDENT = "number-of-teams";
 	private static final String MAP_UUID_KEY_IDENT = "map";
 	private static final String SPAWNER_IDENT = "spawners";
+	private static final String BEDS_IDENT = "beds";
 
 	static {
 		ConfigurationSerialization.registerClass(BedwarsMap.class);
 	}
 
-	private int teamSize;
-	private int teamNumber;
+	private int teamSize; // serialized & deserialized
+	private int teamNumber; // serialized & deserialized
 	@Nonnull
-	private IMap map;
+	private IMap map; // map->uuid s&d
 	
-	private List<BedwarsIngotSpawner> spawners = new ArrayList<>();
-	private Vector[] beds;
+	private List<BedwarsIngotSpawner> spawners = new ArrayList<>(); // s&d
+	private Vector[] beds; // s&d
 	
 	/**
 	 * Create a new map with default settings.
@@ -50,12 +52,21 @@ public class BedwarsMap implements ConfigurationSerializable, Cloneable {
 	}
 	
 	public void NOPROD_changeValues() {
-		teamSize = 2;
-		teamNumber = 8;
+		setTeamSize(2);
+		setTeamNumber(8);
 		spawners.add(new BedwarsIngotSpawner(new Vector(5.0, 120.0, 5.0), Ingot.INGOT_BRONZE));
 		spawners.get(0).setSpeed(20, 10);
 		spawners.add(new BedwarsIngotSpawner(new Vector(-5.0, 120.0, -5.0), Ingot.INGOT_SILVER));
 		spawners.get(0).setSpeed(5, 1);
+		
+		beds[0] = new Vector(1, 1, 1);
+		beds[1] = new Vector(-1, 15, 1);
+		beds[2] = new Vector(25, 25, 25);
+		beds[3] = new Vector(9, -12, 33);
+		beds[4] = new Vector(12, 182, 98);
+		beds[5] = new Vector(2, 58, 2);
+		beds[6] = new Vector(11, 12, 13);
+		beds[7] = new Vector(0, 0, 0);
 	}
 	
 	public BedwarsGame createGame(String name) {
@@ -74,6 +85,9 @@ public class BedwarsMap implements ConfigurationSerializable, Cloneable {
 		return teamNumber;
 	}
 	
+	/**
+	 * Setting the team number also resets all team's beds.
+	 */
 	protected void setTeamNumber(final int teamNumber) {
 		this.teamNumber = teamNumber;
 		beds = new Vector[teamNumber];
@@ -138,6 +152,7 @@ public class BedwarsMap implements ConfigurationSerializable, Cloneable {
 		result.put(TEAM_NUMBER_KEY_IDENT, teamNumber);
 		result.put(MAP_UUID_KEY_IDENT, map.UUID());
 		result.put(SPAWNER_IDENT, spawners);
+		result.put(BEDS_IDENT, beds);
 		
 		return result;
 	}
@@ -149,16 +164,19 @@ public class BedwarsMap implements ConfigurationSerializable, Cloneable {
 		System.out.println("Got this map: " + b.map);
 		
 		if (map.get(TEAM_SIZE_KEY_IDENT) instanceof Integer)
-			b.teamSize = (Integer) map.get(TEAM_SIZE_KEY_IDENT);
+			b.setTeamSize((Integer) map.get(TEAM_SIZE_KEY_IDENT));
 		else
 			System.out.println("team size not an integer: " + map.get(TEAM_SIZE_KEY_IDENT));
 		
 		if (map.get(TEAM_NUMBER_KEY_IDENT) instanceof Integer)
-			b.teamNumber = (Integer) map.get(TEAM_NUMBER_KEY_IDENT);
+			b.setTeamNumber((Integer) map.get(TEAM_NUMBER_KEY_IDENT));
 		else
 			System.out.println("team number not an integer: " + map.get(TEAM_NUMBER_KEY_IDENT));
 		
 		b.spawners = (List<BedwarsIngotSpawner>) map.get(SPAWNER_IDENT);
+		
+		List<Vector> bedlist = (List<Vector>) map.get(BEDS_IDENT);
+		ArrayUtil.listToArray(bedlist, b.beds);
 		
 		return b;
 	}

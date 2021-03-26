@@ -87,7 +87,6 @@ public class MapCommands {
 			File bw = new File(Main.instance().getDataFolder(), "test5clone.yml");
 			bw.createNewFile();
 			FileConfiguration config = YamlConfiguration.loadConfiguration(bw);
-			/*config.set("asdf", bwmap.serialize());*/
 			Main.instance().getMapRegistry().storeConfig(config);
 			sender.sendMessage(ChatColor.GREEN + "Success.");
 			config.save(bw);

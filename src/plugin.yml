@@ -12,7 +12,7 @@ commands:
   save-bedwars:
     description: Finishes the building of this BedWars map and stores it to the disk.
   load-bedwars:
-    description: Loads BedWArs maps from the config file.
+    description: Loads BedWars maps from the config file.
   list-maps:
     description: Lists all available BedWars maps.
   bw-start:
