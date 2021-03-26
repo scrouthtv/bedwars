@@ -73,8 +73,7 @@ public class BedwarsMap implements ConfigurationSerializable, Cloneable {
 		else
 			System.out.println("team number not an integer: " + map.get(TEAM_NUMBER_KEY_IDENT));
 		
-		Object spawners = map.get(SPAWNER_IDENT);
-		System.out.println(spawners);
+		b.spawners = (List<BedwarsIngotSpawner>) map.get(SPAWNER_IDENT);
 		
 		return b;
 	}
@@ -123,6 +122,6 @@ public class BedwarsMap implements ConfigurationSerializable, Cloneable {
 		System.out.println(String.format(" %d x %d", getTeamNumber(), getTeamSize()));
 		System.out.println(" " + spawners.size() + " spawners at");
 		for (BedwarsIngotSpawner bwis : spawners)
-			System.out.println(" - " + bwis.getLocation());
+			System.out.println(" - " + bwis.getLocation() + " (" + bwis.getResource() + ")");
 	}
 }

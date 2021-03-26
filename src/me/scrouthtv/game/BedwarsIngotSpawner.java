@@ -2,8 +2,6 @@ package me.scrouthtv.game;
 
 import me.scrouthtv.shop.Ingot;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
-import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.util.Vector;
 
 import javax.annotation.Nonnull;
@@ -81,5 +79,9 @@ public class BedwarsIngotSpawner implements ConfigurationSerializable {
 	
 	public Vector getLocation() {
 		return loc;
+	}
+	
+	public Ingot getResource() {
+		return resource;
 	}
 }
