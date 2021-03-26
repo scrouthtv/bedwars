@@ -1,16 +1,17 @@
 package me.scrouthtv.game;
 
 import me.scrouthtv.shop.Ingot;
-import org.bukkit.Location;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.configuration.serialization.SerializableAs;
+import org.bukkit.util.Vector;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-@SerializableAs("ingot-spawner")
+@SerializableAs("bedwars-ingot-spawner")
 public class BedwarsIngotSpawner implements ConfigurationSerializable {
 	
 	private static final String LOCATION_IDENT = "loc";
@@ -18,8 +19,8 @@ public class BedwarsIngotSpawner implements ConfigurationSerializable {
 	private static final String TICK_SPEED_IDENT = "speed";
 	private static final String AMOUNT_IDENT = "amount";
 	
-	private Location loc;
-	private Ingot resource;
+	private final Vector loc;
+	private final Ingot resource;
 	private int tickSpeed;
 	private int amount;
 	
@@ -27,30 +28,48 @@ public class BedwarsIngotSpawner implements ConfigurationSerializable {
 		ConfigurationSerialization.registerClass(BedwarsIngotSpawner.class);
 	}
 	
+	BedwarsIngotSpawner(Vector loc, Ingot resource) {
+		this.loc = loc;
+		this.resource = resource;
+		this.tickSpeed = 10;
+		this.amount = 1;
+	}
+	
+	void setSpeed(int tickSpeed, int amount) {
+		this.tickSpeed = tickSpeed;
+		this.amount = amount;
+	}
+	
 	@Nonnull
 	@Override
 	public Map<String, Object> serialize() {
 		Map<String, Object> result = new LinkedHashMap<>();
 		
-		result.put(LOCATION_IDENT, loc);
-		result.put(RESOURCE_IDENT, resource);
+		result.put(LOCATION_IDENT, loc.serialize());
+		result.put(RESOURCE_IDENT, resource.toString());
 		result.put(TICK_SPEED_IDENT, tickSpeed);
 		result.put(AMOUNT_IDENT, amount);
 		
 		return result;
 	}
 	
+	@Nullable
 	public static BedwarsIngotSpawner deserialize(Map<String, Object> map) {
-		BedwarsIngotSpawner s = new BedwarsIngotSpawner();
+		Vector loc;
+		Ingot i;
 		
-		if (map.get(LOCATION_IDENT) instanceof Location)
-			s.loc = (Location) map.get(LOCATION_IDENT);
-		else
+		if (map.get(LOCATION_IDENT) instanceof Vector)
+			loc = (Vector) map.get(LOCATION_IDENT);
+		else {
 			System.out.println("Invalid location: " + map.get(LOCATION_IDENT));
+			return null;
+		}
 		
-		s.resource = Ingot.fromString((String) map.get(RESOURCE_IDENT));
-		if (s.resource == null)
+		i = Ingot.fromString((String) map.get(RESOURCE_IDENT));
+		if (i == null)
 			System.out.println("Invalid resource: " + map.get(RESOURCE_IDENT));
+		
+		BedwarsIngotSpawner s = new BedwarsIngotSpawner(loc, i);
 		
 		if (map.get(TICK_SPEED_IDENT) instanceof Integer)
 			s.tickSpeed = (Integer) map.get(TICK_SPEED_IDENT);

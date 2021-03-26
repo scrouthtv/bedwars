@@ -2,12 +2,13 @@ package me.scrouthtv.game;
 
 import me.scrouthtv.main.Main;
 import me.scrouthtv.maps.IMap;
+import me.scrouthtv.shop.Ingot;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.configuration.serialization.SerializableAs;
+import org.bukkit.util.Vector;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -46,8 +47,10 @@ public class BedwarsMap implements ConfigurationSerializable, Cloneable {
 	public void NOPROD_changeValues() {
 		teamSize = 2;
 		teamNumber = 8;
-		spawners.add(new BedwarsIngotSpawner());
-		spawners.add(new BedwarsIngotSpawner());
+		spawners.add(new BedwarsIngotSpawner(new Vector(5.0, 120.0, 5.0), Ingot.INGOT_BRONZE));
+		spawners.get(0).setSpeed(20, 10);
+		spawners.add(new BedwarsIngotSpawner(new Vector(-5.0, 120.0, -5.0), Ingot.INGOT_SILVER));
+		spawners.get(0).setSpeed(5, 1);
 	}
 	
 	public BedwarsGame createGame(String name) {
