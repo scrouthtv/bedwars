@@ -1,12 +1,13 @@
-package me.scrouthtv.main;
+package me.scrouthtv.game;
 
-import me.scrouthtv.game.BedwarsBuildingItems;
-import me.scrouthtv.game.BedwarsMap;
-import me.scrouthtv.game.BedwarsMapCreatorGui;
+import me.scrouthtv.main.Main;
 import me.scrouthtv.maps.IMap;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+
+import javax.annotation.Nullable;
 
 /**
  * Building a map consists of these steps:
@@ -17,9 +18,8 @@ import org.bukkit.util.Vector;
  *  5. Give the player the building tools.
  *  6. Wait for the player to finish building.
  *  7. Teleport the player back to the hub.
- *  8. Store the configuration to the disk.
  *
- * BuildProcedure handles all steps.
+ * BuildProcedure handles steps 2 - 7.
  */
 public class BuildProcedure implements BedwarsMapCreatorGui.CreatorFinishCallback {
 	private final Player p;
@@ -43,6 +43,8 @@ public class BuildProcedure implements BedwarsMapCreatorGui.CreatorFinishCallbac
 		if (stage != BuildStage.STAGE_INIT) return;
 		
 		stage = BuildStage.STAGE_CREATE;
+		
+		// Open the gui - step 2:
 		BedwarsMapCreatorGui gui = new BedwarsMapCreatorGui(map);
 		gui.setCallback(this);
 		gui.show(p);
@@ -57,18 +59,42 @@ public class BuildProcedure implements BedwarsMapCreatorGui.CreatorFinishCallbac
 		if (stage != BuildStage.STAGE_CREATE) return;
 		
 		stage = BuildStage.STAGE_BUILDING;
+		
+		// 3. Create a BedwarsMap:
 		this.bwmap = map;
+		
+		// 4. Teleport the player to it:
 		p.teleport(this.map.getWorld().getSpawnLocation());
 		p.setGameMode(GameMode.CREATIVE);
 		
+		// 5. Give the player the building tools:
 		tools = new BedwarsBuildingItems(p, this);
 		tools.enterTools();
+	}
+	
+	@Nullable
+	public BedwarsMap buildingFinished() {
+		if (stage != BuildStage.STAGE_BUILDING) return null;
+		
+		stage = BuildStage.STAGE_FINISHED;
+		
+		// 7. Teleport the player back to the hub:
+		tools.exitTools();
+		p.setGameMode(GameMode.SURVIVAL);
+		p.teleport(Bukkit.getWorld("world").getSpawnLocation());
+		
+		return bwmap;
 	}
 	
 	public void setBedLocation(int team, Vector loc) {
 		if (stage != BuildStage.STAGE_BUILDING) return;
 		
-		
+		bwmap.setBedLocation(team, loc);
+	}
+	
+	@Nullable
+	public BedwarsMap getMap() {
+		return bwmap;
 	}
 	
 	public static enum BuildStage {

@@ -45,4 +45,16 @@ public class BedwarsTeam {
 			DyeColor.BLACK, DyeColor.GREEN, DyeColor.ORANGE, DyeColor.WHITE,
 			DyeColor.LIME, DyeColor.LIGHT_BLUE, DyeColor.MAGENTA, DyeColor.BROWN, DyeColor.LIGHT_GRAY, DyeColor.PURPLE, DyeColor.CYAN, DyeColor.GRAY
 	};
+	
+	/**
+	 * Searches for the first (and hopefully only) team that uses this color.
+	 * If no such team could be found, -1 is returned.
+	 */
+	public static int teamNumberFromColor(DyeColor c) {
+		for (int i = 0; i < BedwarsTeam.colorOrder.length; i++) {
+			if (BedwarsTeam.colorOrder[i] == c) return i;
+		}
+		
+		return -1;
+	}
 }

@@ -1,7 +1,7 @@
 package me.scrouthtv.commands;
 
 import me.scrouthtv.game.BedwarsMap;
-import me.scrouthtv.main.BuildProcedure;
+import me.scrouthtv.game.BuildProcedure;
 import me.scrouthtv.main.Main;
 import me.scrouthtv.maps.IMap;
 import org.bukkit.ChatColor;

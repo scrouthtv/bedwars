@@ -6,6 +6,7 @@ import me.scrouthtv.shop.Ingot;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.configuration.serialization.SerializableAs;
+import org.bukkit.craftbukkit.libs.jline.internal.Nullable;
 import org.bukkit.util.Vector;
 
 import javax.annotation.Nonnull;
@@ -32,13 +33,15 @@ public class BedwarsMap implements ConfigurationSerializable, Cloneable {
 	private IMap map;
 	
 	private List<BedwarsIngotSpawner> spawners = new ArrayList<>();
+	private Vector[] beds;
+	private List<Vector> villagers;
 	
 	/**
 	 * Create a new map with default settings.
 	 */
 	public BedwarsMap(@Nonnull IMap map) {
-		teamSize = 4;
-		teamNumber = 4;
+		setTeamSize(4);
+		setTeamNumber(4);
 		this.map = map;
 		
 		Main.instance().getMapRegistry().registerMap(this);
@@ -57,27 +60,6 @@ public class BedwarsMap implements ConfigurationSerializable, Cloneable {
 		return new BedwarsGame(this, name);
 	}
 	
-	@Nonnull
-	public static BedwarsMap deserialize(final Map<String, Object> map) {
-		IMap imap = Main.instance().getMapManager().getByUUID((String) map.get(MAP_UUID_KEY_IDENT));
-		BedwarsMap b = new BedwarsMap(imap);
-		System.out.println("Got this map: " + b.map);
-		
-		if (map.get(TEAM_SIZE_KEY_IDENT) instanceof Integer)
-			b.teamSize = (Integer) map.get(TEAM_SIZE_KEY_IDENT);
-		else
-			System.out.println("team size not an integer: " + map.get(TEAM_SIZE_KEY_IDENT));
-		
-		if (map.get(TEAM_NUMBER_KEY_IDENT) instanceof Integer)
-			b.teamNumber = (Integer) map.get(TEAM_NUMBER_KEY_IDENT);
-		else
-			System.out.println("team number not an integer: " + map.get(TEAM_NUMBER_KEY_IDENT));
-		
-		b.spawners = (List<BedwarsIngotSpawner>) map.get(SPAWNER_IDENT);
-		
-		return b;
-	}
-	
 	public int getTeamSize() {
 		return teamSize;
 	}
@@ -92,6 +74,25 @@ public class BedwarsMap implements ConfigurationSerializable, Cloneable {
 	
 	protected void setTeamNumber(final int teamNumber) {
 		this.teamNumber = teamNumber;
+		beds = new Vector[teamNumber];
+	}
+	
+	void setBedLocation(final int team, final Vector loc) {
+		if (team < 0 || team >= teamNumber)
+			return;
+		
+		beds[team] = loc;
+	}
+	
+	/**
+	 * Retrieves the location of team's bed.
+	 * If the location isn't set, or this team does not exist, null is returned.
+	 */
+	@Nullable
+	public Vector getBedLocation(final int team) {
+		if (team < 0 || team >= teamNumber)
+			return null;
+		return beds[team];
 	}
 	
 	@Nonnull
@@ -116,6 +117,27 @@ public class BedwarsMap implements ConfigurationSerializable, Cloneable {
 		result.put(SPAWNER_IDENT, spawners);
 		
 		return result;
+	}
+	
+	@Nonnull
+	public static BedwarsMap deserialize(final Map<String, Object> map) {
+		IMap imap = Main.instance().getMapManager().getByUUID((String) map.get(MAP_UUID_KEY_IDENT));
+		BedwarsMap b = new BedwarsMap(imap);
+		System.out.println("Got this map: " + b.map);
+		
+		if (map.get(TEAM_SIZE_KEY_IDENT) instanceof Integer)
+			b.teamSize = (Integer) map.get(TEAM_SIZE_KEY_IDENT);
+		else
+			System.out.println("team size not an integer: " + map.get(TEAM_SIZE_KEY_IDENT));
+		
+		if (map.get(TEAM_NUMBER_KEY_IDENT) instanceof Integer)
+			b.teamNumber = (Integer) map.get(TEAM_NUMBER_KEY_IDENT);
+		else
+			System.out.println("team number not an integer: " + map.get(TEAM_NUMBER_KEY_IDENT));
+		
+		b.spawners = (List<BedwarsIngotSpawner>) map.get(SPAWNER_IDENT);
+		
+		return b;
 	}
 	
 	public void print() {
