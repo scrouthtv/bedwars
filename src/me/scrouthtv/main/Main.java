@@ -4,6 +4,7 @@ import me.scrouthtv.commands.BedwarsCommands;
 import me.scrouthtv.commands.IngotCommands;
 import me.scrouthtv.commands.MapCommands;
 import me.scrouthtv.game.BedwarsIngotSpawner;
+import me.scrouthtv.game.BuilderRegistry;
 import me.scrouthtv.game.MapRegistry;
 import me.scrouthtv.maps.IMapManager;
 import me.scrouthtv.maps.DimAdapter;

@@ -1,4 +1,4 @@
-package me.scrouthtv.main;
+package me.scrouthtv.game;
 
 import org.bukkit.entity.Player;
 
