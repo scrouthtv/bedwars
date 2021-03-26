@@ -18,7 +18,7 @@ public enum Ingot {
 	private Material m;
 	private String name;
 	
-	private Ingot(Material m, String name) {
+	Ingot(Material m, String name) {
 		this.m = m;
 		this.name = name;
 	}
@@ -52,5 +52,4 @@ public enum Ingot {
 		
 		return null;
 	}
-	
 }
