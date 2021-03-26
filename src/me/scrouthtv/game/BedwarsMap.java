@@ -3,6 +3,9 @@ package me.scrouthtv.game;
 import me.scrouthtv.main.Main;
 import me.scrouthtv.maps.IMap;
 import me.scrouthtv.shop.Ingot;
+import me.scrouthtv.utils.BlockUtil;
+import org.bukkit.block.Block;
+import org.bukkit.block.data.type.Bed;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.configuration.serialization.SerializableAs;
@@ -84,6 +87,27 @@ public class BedwarsMap implements ConfigurationSerializable, Cloneable {
 	}
 	
 	/**
+	 * Searches for the team who owns this bed.
+	 *
+	 * Returns -1 if the team couldn't be found.
+	 *
+	 * @return the team's number, starting at 0.
+	 */
+	public int getTeamByBed(Vector loc) {
+		final Block bloc = map.blockInWorld(loc);
+		final Block base = BlockUtil.findBedPart(bloc, Bed.Part.FOOT);
+		final Vector bvec = base.getLocation().toVector();
+		
+		for (int i = 0; i < beds.length; i++) {
+			if (beds[i] != null && beds[i].equals(bvec)) {
+				return i;
+			}
+		}
+		
+		return -1;
+	}
+	
+	/**
 	 * Retrieves the location of team's bed.
 	 * If the location isn't set, or this team does not exist, null is returned.
 	 */
@@ -140,9 +164,13 @@ public class BedwarsMap implements ConfigurationSerializable, Cloneable {
 	}
 	
 	public void print() {
-		System.out.println(String.format(" %d x %d", getTeamNumber(), getTeamSize()));
+		System.out.println(String.format(" %d teams each %d players", getTeamNumber(), getTeamSize()));
 		System.out.println(" " + spawners.size() + " spawners at");
 		for (BedwarsIngotSpawner bwis : spawners)
-			System.out.println(" - " + bwis.getLocation() + " (" + bwis.getResource() + ")");
+			System.out.println("  - " + bwis.getLocation() + " (" + bwis.getResource() + ")");
+		System.out.println(" beds:");
+		for (int i = 0; i < getTeamNumber(); i++) {
+			System.out.println("  " + i + ") " + beds[i]);
+		}
 	}
 }

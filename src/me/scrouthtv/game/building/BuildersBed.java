@@ -93,7 +93,15 @@ public class BuildersBed implements BuildingItem {
 	public void onBreak(BlockBreakEvent ev) {
 		if (!ev.getPlayer().equals(holder)) return;
 		if (ColoredBed.colorFromBed(ev.getBlock().getType()) == null) return;
-		System.out.println("block break event");
+		
+		final int target = ctx.getMap().getTeamByBed(ev.getBlock().getLocation().toVector());
+		if (target == -1)
+			ev.getPlayer().sendMessage(ChatColor.RED + "Could not find the bed's owner.");
+		else {
+			ctx.setBedLocation(target, null);
+			nextTeam();
+			refreshItem();
+		}
 	}
 	
 	private void nextTeam() {
@@ -101,6 +109,7 @@ public class BuildersBed implements BuildingItem {
 		int target = -1;
 		for (int i = team + 1; i != team; i++) {
 			i %= ctx.getMap().getTeamNumber();
+			System.out.println(i);
 			if (ctx.getMap().getBedLocation(i) == null) {
 				System.out.println("team " + i + " doesnt have a bed");
 				target = i;
