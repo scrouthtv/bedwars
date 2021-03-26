@@ -86,4 +86,14 @@ public class MapCommands {
 			return false;
 		}
 	}
+	
+	public static boolean loadBedwars(final CommandSender sender, final Command command, final String[] args) {
+		File bw = new File(Main.instance().getDataFolder(), "test5clone.yml");
+		FileConfiguration config = YamlConfiguration.loadConfiguration(bw);
+		Main.instance().getMapRegistry().loadConfig(config);
+		
+		Main.instance().getMapRegistry().printMaps();
+		
+		return true;
+	}
 }

@@ -76,6 +76,8 @@ public class Main extends JavaPlugin implements CommandExecutor {
 				return MapCommands.buildBedwars(sender, command, args);
 			case "save-bedwars":
 				return MapCommands.saveBedwars(sender, command, args);
+			case "load-bedwars":
+				return MapCommands.loadBedwars(sender, command, args);
 			case "list-maps":
 				return MapCommands.listMaps(sender, command, args);
 			case "bw-create":
