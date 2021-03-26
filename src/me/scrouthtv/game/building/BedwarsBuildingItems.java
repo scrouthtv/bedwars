@@ -1,9 +1,6 @@
-package me.scrouthtv.game;
+package me.scrouthtv.game.building;
 
-import me.scrouthtv.game.building.BuildersBed;
-import me.scrouthtv.game.building.BuildingItem;
-import me.scrouthtv.game.building.BuildersShopSpawner;
-import me.scrouthtv.game.building.BuildersWool;
+import me.scrouthtv.game.BuildProcedure;
 import me.scrouthtv.main.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -24,19 +21,20 @@ public class BedwarsBuildingItems {
 		
 		items.add(new BuildersWool(this.parent));
 		items.add(new BuildersBed(this.parent));
-		items.add(new BuildersShopSpawner(this.parent));
+		items.add(new BuildersFinalizer(this.parent));
 	}
 	
 	public void enterTools() {
+		p.getInventory().clear();
 		for (BuildingItem i : items) {
 			Bukkit.getPluginManager().registerEvents(i, Main.instance());
-			i.enterTool(p);
+			i.enterTool();
 		}
 	}
 	
 	public void exitTools() {
 		for (BuildingItem i : items) {
-			i.exitTool(p);
+			i.exitTool();
 			HandlerList.unregisterAll(i);
 		}
 	}

@@ -4,50 +4,50 @@ import me.scrouthtv.game.BedwarsTeam;
 import me.scrouthtv.game.BuildProcedure;
 import me.scrouthtv.utils.ColoredWool;
 import org.bukkit.DyeColor;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 public class BuildersWool implements BuildingItem {
 	private final BuildProcedure ctx;
+	private final Player holder;
 	
-	private ItemStack i;
-	
-	public void setup() {
-		i = new ItemStack(ColoredWool.woolFromColor(BedwarsTeam.colorOrder[0]));
-		ItemMeta meta = i.getItemMeta();
-		meta.setDisplayName("Team 1's wool");
-		i.setItemMeta(meta);
-	}
+	private int team;
 	
 	public BuildersWool(BuildProcedure ctx) {
 		this.ctx = ctx;
+		holder = ctx.getPlayer();
 	}
 	
-	public void enterTool(Player p) {
-		p.getInventory().addItem(i);
+	public void enterTool() {
+		team = 0;
+		
+		holder.getInventory().addItem(currentItem());
 	}
 	
-	public void exitTool(Player p) {
-		p.getInventory().removeItem(i);
+	private ItemStack currentItem() {
+		return new ItemStack(ColoredWool.woolFromColor(BedwarsTeam.colorOrder[team]));
+	}
+	
+	public void exitTool() {
+		for (DyeColor c : DyeColor.values())
+			holder.getInventory().remove(ColoredWool.woolFromColor(c));
 	}
 	
 	@EventHandler
 	public void onDrop(PlayerDropItemEvent ev) {
-		if (ev.getItemDrop().getItemStack() != i) return;
+		// Are they the building player?
+		if (!ev.getPlayer().equals(holder)) return;
+		// Did they drop a (colored) wool?
+		if (ColoredWool.colorFromWool(ev.getItemDrop().getItemStack().getType()) == null) return;
 		
-		Item i = ev.getItemDrop();
-		ev.setCancelled(true);
+		team = (team+1) % ctx.getMap().getTeamNumber();
 		
-		DyeColor woolDye = ColoredWool.colorFromWool(i.getItemStack().getType());
-		if (woolDye != null) {
-			int nextTeam = BedwarsTeam.teamNumberFromColor(woolDye) + 1;
-			woolDye = BedwarsTeam.colorOrder[nextTeam];
-			ev.getPlayer().getInventory().getItemInMainHand().setType(ColoredWool.woolFromColor(woolDye));
-		}
+		// Remove the original wool and give them the new one:
+		ev.setCancelled(false);
+		ev.getItemDrop().remove();
+		ev.getPlayer().getInventory().setItemInMainHand(currentItem());
 	}
 	
 }

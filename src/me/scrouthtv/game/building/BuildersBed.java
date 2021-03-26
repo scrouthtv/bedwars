@@ -4,9 +4,11 @@ import me.scrouthtv.game.BedwarsTeam;
 import me.scrouthtv.game.BuildProcedure;
 import me.scrouthtv.utils.ColoredBed;
 import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
@@ -16,67 +18,108 @@ import org.bukkit.util.Vector;
 public class BuildersBed implements BuildingItem {
 	private final BuildProcedure ctx;
 	
-	private ItemStack i;
+	private static final ItemStack NO_MORE_BEDS = new ItemStack(Material.BARRIER);
+	
+	static {
+		ItemMeta meta = NO_MORE_BEDS.getItemMeta();
+		meta.setDisplayName("All beds have been built");
+		NO_MORE_BEDS.setItemMeta(meta);
+	}
+	
+	private final Player holder;
 	private int team;
 	
 	public BuildersBed(BuildProcedure ctx) {
 		this.ctx = ctx;
+		holder = ctx.getPlayer();
 	}
 	
-	public void setup() {
-		team = 0;
-		i = new ItemStack(ColoredBed.bedFromColor(BedwarsTeam.colorOrder[0]));
-		ItemMeta meta = i.getItemMeta();
-		meta.setDisplayName("Team 1's bed");
-		i.setItemMeta(meta);
+	public void enterTool() {
+		refreshItem();
 	}
 	
-	public void enterTool(final Player p) {
-		p.getInventory().addItem(i);
+	public void exitTool() {
+		// Remove all beds from the player's inventory
+		for (DyeColor c : DyeColor.values())
+			holder.getInventory().remove(ColoredBed.bedFromColor(c));
+		holder.getInventory().remove(NO_MORE_BEDS);
 	}
 	
-	public void exitTool(final Player p) {
-		p.getInventory().removeItem(i);
+	private void refreshItem() {
+		// Remove all beds:
+		for (DyeColor c : DyeColor.values())
+			holder.getInventory().remove(ColoredBed.bedFromColor(c));
+		holder.getInventory().remove(NO_MORE_BEDS);
+		
+		// Give them a new bed with correct color & label,
+		// or a barrier if all beds have been placed:
+		
+		if (team == -1) {
+			holder.getInventory().addItem(NO_MORE_BEDS.clone());
+			holder.sendMessage(ChatColor.BLUE + "All beds have been placed.");
+		} else {
+			ItemStack i = new ItemStack(ColoredBed.bedFromColor(BedwarsTeam.colorOrder[team]));
+			ItemMeta meta = i.getItemMeta();
+			meta.setDisplayName("Team " + (team + 1) + "'s bed");
+			i.setItemMeta(meta);
+			holder.getInventory().addItem(i);
+			System.out.println("asdfasdf: " + team);
+		}
 	}
 	
 	@EventHandler
 	public void onBuild(BlockPlaceEvent ev) {
-		if (ev.getItemInHand() != i) return;
+		if (!ev.getPlayer().equals(holder)) return;
 		
-		if (ev.getItemInHand().getType().equals(Material.BARRIER)) {
+		final DyeColor c = ColoredBed.colorFromBed(ev.getItemInHand().getType());
+		
+		if (ev.getItemInHand().equals(NO_MORE_BEDS)) {
+			// If it's the barrier, simply cancel the event:
 			ev.setCancelled(true);
-			ev.getPlayer().sendMessage(ChatColor.BLUE + "All beds have been placed.");
-		} else {
+		} else if (c != null) {
+			// If it's a colored bed, set the bed location:
+			final int team = BedwarsTeam.teamNumberFromColor(c);
 			Vector loc = ev.getBlockPlaced().getLocation().toVector();
 			ctx.setBedLocation(team, loc);
-			nextItem();
 			ev.getPlayer().sendMessage(ChatColor.BLUE + "Placed the bed of team " + team + " to " + loc);
-		}
-	}
-	
-	private void nextItem() {
-		// find the next team whose bed isn't set yet:
-		int target = -1;
-		for (int i = team; i != team - 1; i = (i+1) % ctx.getMap().getTeamNumber()) {
-			if (ctx.getMap().getBedLocation(i) == null) {
-				target = i;
-				break;
-			}
-		}
-		
-		// if all beds are set, replace the item with a barrier.
-		team = target;
-		if (target == -1) {
-			i.setType(Material.BARRIER);
-		} else {
-			i.setType(ColoredBed.bedFromColor(BedwarsTeam.colorOrder[target]));
+			
+			// and give them the next bed:
+			nextTeam();
+			refreshItem();
 		}
 	}
 	
 	@EventHandler
+	public void onBreak(BlockBreakEvent ev) {
+		if (!ev.getPlayer().equals(holder)) return;
+		if (ColoredBed.colorFromBed(ev.getBlock().getType()) == null) return;
+		System.out.println("block break event");
+	}
+	
+	private void nextTeam() {
+		// find the next team whose bed isn't set yet:
+		int target = -1;
+		for (int i = team + 1; i != team; i++) {
+			i %= ctx.getMap().getTeamNumber();
+			if (ctx.getMap().getBedLocation(i) == null) {
+				System.out.println("team " + i + " doesnt have a bed");
+				target = i;
+				break;
+			}
+		}
+		team = target;
+	}
+	
+	@EventHandler
 	public void onDrop(PlayerDropItemEvent ev) {
-		if (ev.getItemDrop().getItemStack() != i) return;
+		System.out.println("got a drop event");
+		if (!ev.getPlayer().equals(holder)) return;
+		if (ColoredBed.colorFromBed(ev.getItemDrop().getItemStack().getType()) == null) return;
+		System.out.println("but its ours");
 		
-		nextItem();
+		ev.setCancelled(false);
+		ev.getItemDrop().remove();
+		nextTeam();
+		refreshItem();
 	}
 }
