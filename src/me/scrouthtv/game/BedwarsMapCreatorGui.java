@@ -2,6 +2,7 @@ package me.scrouthtv.game;
 
 import me.scrouthtv.main.Main;
 import me.scrouthtv.maps.IMap;
+import me.scrouthtv.utils.UI;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -138,9 +139,9 @@ public class BedwarsMapCreatorGui implements Listener {
 	
 	private void playClickSound(Player p, boolean success) {
 		if (success) {
-			p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.MASTER, 1, 1);
+			UI.playSuccessSound(p);
 		} else {
-			p.playSound(p.getLocation(), Sound.ITEM_SHIELD_BREAK, SoundCategory.MASTER, 1, 1);
+			UI.playErrorSound(p);
 		}
 	}
 	

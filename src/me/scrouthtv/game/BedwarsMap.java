@@ -34,7 +34,6 @@ public class BedwarsMap implements ConfigurationSerializable, Cloneable {
 	
 	private List<BedwarsIngotSpawner> spawners = new ArrayList<>();
 	private Vector[] beds;
-	private List<Vector> villagers;
 	
 	/**
 	 * Create a new map with default settings.

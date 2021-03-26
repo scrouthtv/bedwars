@@ -49,6 +49,7 @@ public class BedwarsTeam {
 	/**
 	 * Searches for the first (and hopefully only) team that uses this color.
 	 * If no such team could be found, -1 is returned.
+	 * Team numberi are starting with 0.
 	 */
 	public static int teamNumberFromColor(DyeColor c) {
 		for (int i = 0; i < BedwarsTeam.colorOrder.length; i++) {

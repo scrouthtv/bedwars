@@ -1,5 +1,6 @@
 package me.scrouthtv.game;
 
+import me.scrouthtv.game.building.BedwarsBuildingItems;
 import me.scrouthtv.main.Main;
 import me.scrouthtv.maps.IMap;
 import org.bukkit.Bukkit;
@@ -72,6 +73,21 @@ public class BuildProcedure implements BedwarsMapCreatorGui.CreatorFinishCallbac
 		tools.enterTools();
 	}
 	
+	/**
+	 * Tests whether this build can be finished at this point, or
+	 * if there are still things missing.
+	 * It tests
+	 *  - whether all beds have been placed.
+	 */
+	public boolean canFinish() {
+		// test whether all beds have been placed:
+		for (int i = 0; i < bwmap.getTeamNumber(); i++) {
+			if (bwmap.getBedLocation(i) == null) return false;
+		}
+		
+		return true;
+	}
+	
 	@Nullable
 	public BedwarsMap buildingFinished() {
 		if (stage != BuildStage.STAGE_BUILDING) return null;
@@ -95,6 +111,10 @@ public class BuildProcedure implements BedwarsMapCreatorGui.CreatorFinishCallbac
 	@Nullable
 	public BedwarsMap getMap() {
 		return bwmap;
+	}
+	
+	public Player getPlayer() {
+		return p;
 	}
 	
 	public static enum BuildStage {
