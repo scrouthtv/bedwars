@@ -21,6 +21,7 @@ public class BedwarsBuildingItems {
 		
 		items.add(new BuildersWool(this.parent));
 		items.add(new BuildersBed(this.parent));
+		items.add(new BuildersResourceSpawner(this.parent));
 		items.add(new BuildersFinalizer(this.parent));
 	}
 	

@@ -130,6 +130,10 @@ public class BuildProcedure implements BedwarsMapCreatorGui.CreatorFinishCallbac
 		return bwmap;
 	}
 	
+	public void addSpawner(final BedwarsIngotSpawner spawner) {
+		bwmap.addSpawner(spawner);
+	}
+	
 	/**
 	 * Sets the bed location of a specified team.
 	 * The position can be set to null to indicate that the bed hasn't been

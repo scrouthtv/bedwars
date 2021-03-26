@@ -21,7 +21,7 @@ public class BedwarsIngotSpawner implements ConfigurationSerializable {
 	private int tickSpeed;
 	private int amount;
 	
-	BedwarsIngotSpawner(Vector loc, Ingot resource) {
+	public BedwarsIngotSpawner(Vector loc, Ingot resource) {
 		this.loc = loc;
 		this.resource = resource;
 		this.tickSpeed = 10;

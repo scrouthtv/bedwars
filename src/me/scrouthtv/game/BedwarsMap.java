@@ -10,9 +10,9 @@ import org.bukkit.block.data.type.Bed;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.configuration.serialization.SerializableAs;
-import org.bukkit.craftbukkit.libs.jline.internal.Nullable;
 import org.bukkit.util.Vector;
 
+import javax.annotation.Nullable;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -51,6 +51,9 @@ public class BedwarsMap implements ConfigurationSerializable, Cloneable {
 		Main.instance().getMapRegistry().registerMap(this);
 	}
 	
+	/**
+	 * Only for testing.
+	 */
 	public void NOPROD_changeValues() {
 		setTeamSize(2);
 		setTeamNumber(8);
@@ -93,11 +96,25 @@ public class BedwarsMap implements ConfigurationSerializable, Cloneable {
 		beds = new Vector[teamNumber];
 	}
 	
-	void setBedLocation(final int team, final Vector loc) {
+	protected void setBedLocation(final int team, final Vector loc) {
 		if (team < 0 || team >= teamNumber)
 			return;
 		
 		beds[team] = loc;
+	}
+	
+	protected void addSpawner(BedwarsIngotSpawner spawner) {
+		spawners.add(spawner);
+	}
+	
+	@Nullable
+	public BedwarsIngotSpawner getSpawner(Vector loc) {
+		for (BedwarsIngotSpawner s : spawners) {
+			if (s.getLocation().equals(loc))
+				return s;
+		}
+		
+		return null;
 	}
 	
 	/**

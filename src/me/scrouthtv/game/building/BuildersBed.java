@@ -16,7 +16,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 
 public class BuildersBed implements BuildingItem {
-	private final BuildProcedure ctx;
 	
 	private static final ItemStack NO_MORE_BEDS = new ItemStack(Material.BARRIER);
 	
@@ -26,6 +25,7 @@ public class BuildersBed implements BuildingItem {
 		NO_MORE_BEDS.setItemMeta(meta);
 	}
 	
+	private final BuildProcedure ctx;
 	private final Player holder;
 	private int team;
 	
@@ -121,10 +121,8 @@ public class BuildersBed implements BuildingItem {
 	
 	@EventHandler
 	public void onDrop(PlayerDropItemEvent ev) {
-		System.out.println("got a drop event");
 		if (!ev.getPlayer().equals(holder)) return;
 		if (ColoredBed.colorFromBed(ev.getItemDrop().getItemStack().getType()) == null) return;
-		System.out.println("but its ours");
 		
 		ev.setCancelled(false);
 		ev.getItemDrop().remove();
