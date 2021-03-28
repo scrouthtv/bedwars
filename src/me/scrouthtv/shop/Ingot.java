@@ -32,6 +32,18 @@ public enum Ingot {
 	}
 	
 	/**
+	 * Searches for the position of a specified ingot in the values() list.
+	 * If the ingot couldn't be found, -1 is returned.
+	 */
+	public static int idxInValues(Ingot i) {
+		for (int j = 0; j < values().length; j++) {
+			if (values()[j] == i) return j;
+		}
+		
+		return -1;
+	}
+	
+	/**
 	 * toString creates an ingot-unique string identifier for this ingot.
 	 */
 	@Nonnull
