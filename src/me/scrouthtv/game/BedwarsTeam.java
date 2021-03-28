@@ -3,6 +3,8 @@ package me.scrouthtv.game;
 import org.bukkit.DyeColor;
 import org.bukkit.entity.Player;
 
+import java.util.function.Consumer;
+
 public class BedwarsTeam {
 	private final Player[] players;
 	
@@ -31,6 +33,25 @@ public class BedwarsTeam {
 				players[i] = p;
 				return true;
 			}
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Executes the specified action for every non-null player.
+	 */
+	public void everyPlayer(Consumer<Player> thing) {
+		for (Player p : players) {
+			if (p != null) thing.accept(p);
+		}
+	}
+	
+	public boolean containsPlayer(Player p) {
+		if (p == null) return false;
+		
+		for (int i = 0; i < players.length; i++) {
+			if (p.equals(players[i])) return true;
 		}
 		
 		return false;

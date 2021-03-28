@@ -2,7 +2,6 @@ package me.scrouthtv.commands;
 
 import me.scrouthtv.game.BedwarsGame;
 import me.scrouthtv.game.BedwarsMap;
-import me.scrouthtv.game.GameRegistry;
 import me.scrouthtv.main.Main;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -19,6 +18,12 @@ public class BedwarsCommands {
 		
 		BedwarsMap map = Main.instance().getMapRegistry().getMap(args[0]);
 		BedwarsGame game = map.createGame(args[1]);
+		
+		if (game != null) {
+			sender.sendMessage(ChatColor.GREEN + "Success!");
+		} else {
+			sender.sendMessage(ChatColor.RED + "Error creating the game.");
+		}
 		
 		return true;
 	}
@@ -43,7 +48,13 @@ public class BedwarsCommands {
 				return false;
 			}
 			
-			return game.playerJoin(p);
+			if (game.playerJoin(p)) {
+				sender.sendMessage(ChatColor.GREEN + "Success!");
+				return true;
+			} else {
+				sender.sendMessage(ChatColor.RED + "Error joining the game.");
+				return false;
+			}
 			
 		} else {
 			sender.sendMessage(ChatColor.RED + "Expected one parameter.");
@@ -68,7 +79,7 @@ public class BedwarsCommands {
 			return false;
 		}
 		
-		game.start();
+		game.startGame();
 		return true;
 	}
 }

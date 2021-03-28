@@ -5,6 +5,7 @@ import me.scrouthtv.maps.IMap;
 import me.scrouthtv.shop.Ingot;
 import me.scrouthtv.utils.ArrayUtil;
 import me.scrouthtv.utils.BlockUtil;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.Bed;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -211,5 +212,14 @@ public class BedwarsMap implements ConfigurationSerializable, Cloneable {
 		for (int i = 0; i < getTeamNumber(); i++) {
 			System.out.println("  " + i + ") " + beds[i]);
 		}
+	}
+	
+	public Location getSpawnLocation(final int team) {
+		System.out.println("not implemented\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+		return getMap().getWorld().getSpawnLocation();
+	}
+	
+	public Location getSpectatorSpawnLocation() {
+		return getMap().getWorld().getSpawnLocation().add(0, 20, 0);
 	}
 }

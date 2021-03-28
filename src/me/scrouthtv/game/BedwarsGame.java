@@ -3,6 +3,8 @@ package me.scrouthtv.game;
 import me.scrouthtv.main.Main;
 import me.scrouthtv.maps.IMap;
 import me.scrouthtv.utils.ColoredBed;
+import me.scrouthtv.utils.UI;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -12,6 +14,7 @@ import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class BedwarsGame implements Listener {
 	private final BedwarsMap properties;
@@ -57,6 +60,8 @@ public class BedwarsGame implements Listener {
 		
 		if (teams[team].playerJoin(p)) {
 			Main.instance().getPlayerRegistry().registerPlayer(p, this);
+			p.setGameMode(GameMode.SURVIVAL);
+			p.teleport(properties.getSpectatorSpawnLocation());
 			return true;
 		} else {
 			return false;
@@ -97,20 +102,56 @@ public class BedwarsGame implements Listener {
 		
 		state = GameState.STATE_PLAY;
 		
+		everyPlayer(player -> player.setGameMode(GameMode.SURVIVAL));
+		for (int i = 0; i < teams.length; i++) {
+			final int finalI = i; // idk
+			teams[i].everyPlayer(p -> p.teleport(properties.getSpawnLocation(finalI)));
+		}
+		
 		return true;
 	}
 	
+	public int getPlayerTeam(Player p) {
+		if (p == null) return -1;
+		
+		for (int i = 0; i < teams.length; i++) {
+			if (teams[i].containsPlayer(p)) return i;
+		}
+		
+		return -1;
+	}
+	
 	protected void onDamage(EntityDamageEvent ev) {
-		if (ev instanceof Player) {
+		if (state != GameState.STATE_PLAY) {
+			ev.setCancelled(true);
+			return;
+		}
+		
+		if (ev.getEntity() instanceof Player) {
 			// Revive the player if he dies:
 			final Player p = (Player) ev.getEntity();
 			if (p.getHealth() < ev.getFinalDamage()) {
 				ev.setCancelled(true);
-				p.teleport(ev.getEntity().getWorld().getSpawnLocation());
+				playerDies(p);
 			}
-			
 		} else {
+			// Don't allow damaging:
 			ev.setCancelled(true);
+		}
+	}
+	
+	private void playerDies(Player p) {
+		final int team = getPlayerTeam(p);
+		if (team == -1) return;
+		
+		if (hasBed[team]) {
+			// respawn them:
+			p.teleport(properties.getSpawnLocation(team));
+			p.getInventory().clear();
+		} else {
+			p.teleport(properties.getSpectatorSpawnLocation());
+			p.getInventory().clear();
+			p.setGameMode(GameMode.SPECTATOR);
 		}
 	}
 	
@@ -129,18 +170,19 @@ public class BedwarsGame implements Listener {
 			// destroy the bed
 			final int team = properties.getTeamByBed(ev.getBlock().getLocation().toVector());
 			hasBed[team] = false;
+			everyPlayer(player -> UI.playBedDestroySound(player));
 		} else {
 			// a block of the map, don't destroy it
 			ev.setCancelled(true);
 		}
 	}
 	
-	public String getName() {
-		return name;
+	protected void everyPlayer(Consumer<Player> thing) {
+		for (BedwarsTeam team : teams) team.everyPlayer(thing);
 	}
 	
-	public void start() {
-	
+	public String getName() {
+		return name;
 	}
 	
 	public boolean canStart() {

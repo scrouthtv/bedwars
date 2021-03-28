@@ -12,4 +12,8 @@ public class UI {
 	public static void playSuccessSound(final Player p) {
 		p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.MASTER, 1, 1);
 	}
+	
+	public static void playBedDestroySound(final Player p) {
+		p.playSound(p.getLocation(), Sound.ENTITY_DRAGON_FIREBALL_EXPLODE, 1, 1);
+	}
 }
