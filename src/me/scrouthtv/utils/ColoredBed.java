@@ -30,6 +30,10 @@ public class ColoredBed {
 		colors.put(DyeColor.BLACK, Material.BLACK_BED);
 	}
 	
+	public static boolean isColoredBed(Material m) {
+		return colorFromBed(m) != null;
+	}
+	
 	@Nullable
 	public static DyeColor colorFromBed(Material m) {
 		for (Map.Entry<DyeColor, Material> bed : colors.entrySet()) {

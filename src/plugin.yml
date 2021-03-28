@@ -15,8 +15,11 @@ commands:
     description: Loads BedWars maps from the config file.
   list-maps:
     description: Lists all available BedWars maps.
-  bw-start:
+  bw-create:
     description: Creates a new BedWars game from an existing map.
     usage: "Usage: /<command> <map-name> <game-name>"
+  bw-start:
+    description: Starts a BedWasr game.
+    usage: "Usage: /<command> <game-name>"
   bw-join:
     description: Makes this player join a running BedWars game.

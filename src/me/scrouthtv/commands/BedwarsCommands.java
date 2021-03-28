@@ -32,7 +32,12 @@ public class BedwarsCommands {
 			
 			Player p = (Player) sender;
 			
-			final BedwarsGame game = GameRegistry.getGame(args[0]);
+			if (Main.instance().getPlayerRegistry().getGame(p) != null) {
+				sender.sendMessage(ChatColor.RED + "You are already in a game. Please leave this game first using /bw-leave.");
+				return false;
+			}
+			
+			final BedwarsGame game = Main.instance().getGameRegistry().getGame(args[0]);
 			if (game == null) {
 				sender.sendMessage(ChatColor.RED + "Unknown game " + args[0]);
 				return false;
@@ -44,5 +49,26 @@ public class BedwarsCommands {
 			sender.sendMessage(ChatColor.RED + "Expected one parameter.");
 			return false;
 		}
+	}
+	
+	public static boolean bwStart(final CommandSender sender, final Command cmd, final String[] args) {
+		if (args.length != 1) {
+			sender.sendMessage(ChatColor.RED + "Please specify a game.");
+			return false;
+		}
+		
+		BedwarsGame game = Main.instance().getGameRegistry().getGame(args[0]);
+		if (game == null) {
+			sender.sendMessage(ChatColor.RED + "Unknown game " + args[0] + "");
+			return false;
+		}
+		
+		if (!game.canStart()) {
+			sender.sendMessage(ChatColor.RED + "Game can't start at the moment.");
+			return false;
+		}
+		
+		game.start();
+		return true;
 	}
 }

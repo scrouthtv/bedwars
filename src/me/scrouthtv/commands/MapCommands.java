@@ -73,18 +73,11 @@ public class MapCommands {
 	}
 	
 	public static boolean saveBedwars(final CommandSender sender, final Command command, final String[] args) {
-		IMap imap = Main.instance().getMapManager().getByName("test5clone");
-		BedwarsMap bwmap = new BedwarsMap(imap);
-		bwmap.NOPROD_changeValues();
-		System.out.println(bwmap.getMap());
-		
-		IMap imap2 = Main.instance().getMapManager().getByName("test5");
-		BedwarsMap bwmap2 = new BedwarsMap(imap2);
-		
+		System.out.println("saving maps:");
 		Main.instance().getMapRegistry().printMaps();
 		
 		try {
-			File bw = new File(Main.instance().getDataFolder(), "test5clone.yml");
+			File bw = new File(Main.instance().getDataFolder(), "maps.yml");
 			bw.createNewFile();
 			FileConfiguration config = YamlConfiguration.loadConfiguration(bw);
 			Main.instance().getMapRegistry().storeConfig(config);
@@ -101,7 +94,7 @@ public class MapCommands {
 	}
 	
 	public static boolean loadBedwars(final CommandSender sender, final Command command, final String[] args) {
-		File bw = new File(Main.instance().getDataFolder(), "test5clone.yml");
+		File bw = new File(Main.instance().getDataFolder(), "maps.yml");
 		FileConfiguration config = YamlConfiguration.loadConfiguration(bw);
 		Main.instance().getMapRegistry().loadConfig(config);
 		

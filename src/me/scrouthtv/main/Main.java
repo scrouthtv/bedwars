@@ -3,10 +3,7 @@ package me.scrouthtv.main;
 import me.scrouthtv.commands.BedwarsCommands;
 import me.scrouthtv.commands.IngotCommands;
 import me.scrouthtv.commands.MapCommands;
-import me.scrouthtv.game.BedwarsIngotSpawner;
-import me.scrouthtv.game.BuildProcedure;
-import me.scrouthtv.game.BuilderRegistry;
-import me.scrouthtv.game.MapRegistry;
+import me.scrouthtv.game.*;
 import me.scrouthtv.maps.IMapManager;
 import me.scrouthtv.maps.DimAdapter;
 import me.scrouthtv.shop.Shop;
@@ -25,6 +22,8 @@ public class Main extends JavaPlugin implements CommandExecutor {
 	private IMapManager mapManager;
 	private MapRegistry mapRegistry;
 	private BuilderRegistry builders;
+	private GameRegistry gameRegistry;
+	private PlayerRegistry playerRegistry;
 	
 	/**
 	 * instance returns the plugin instance that was the last to be enabled.
@@ -52,7 +51,14 @@ public class Main extends JavaPlugin implements CommandExecutor {
 		mapManager.loadConfig(getConfig());
 		
 		mapRegistry = new MapRegistry();
+		
 		builders = new BuilderRegistry();
+		
+		gameRegistry = new GameRegistry();
+		Bukkit.getPluginManager().registerEvents(gameRegistry, this);
+		
+		playerRegistry = new PlayerRegistry();
+		Bukkit.getPluginManager().registerEvents(playerRegistry, this);
 	}
 	
 	public IMapManager getMapManager() {
@@ -67,6 +73,14 @@ public class Main extends JavaPlugin implements CommandExecutor {
 		return builders;
 	}
 	
+	public GameRegistry getGameRegistry() {
+		return gameRegistry;
+	}
+	
+	public PlayerRegistry getPlayerRegistry() {
+		return playerRegistry;
+	}
+	
 	@Override
 	public void onDisable() {
 		getServer().getConsoleSender().sendMessage(ChatColor.BLUE + "Stopping Bedwars 1");
@@ -78,23 +92,25 @@ public class Main extends JavaPlugin implements CommandExecutor {
 	}
 	
 	@Override
-	public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
-		// Using command.getLabel() allows us to match /bedwars:xyz as well
-		switch (command.getLabel()) {
+	public boolean onCommand(final CommandSender sender, final Command cmd, final String label, final String[] args) {
+		// Using cmd.getLabel() allows us to match /bedwars:xyz as well
+		switch (cmd.getLabel()) {
 			case "give-ingot":
-				return IngotCommands.giveIngot(sender, command, args);
+				return IngotCommands.giveIngot(sender, cmd, args);
 			case "build-bedwars":
-				return MapCommands.buildBedwars(sender, command, args);
+				return MapCommands.buildBedwars(sender, cmd, args);
 			case "save-bedwars":
-				return MapCommands.saveBedwars(sender, command, args);
+				return MapCommands.saveBedwars(sender, cmd, args);
 			case "load-bedwars":
-				return MapCommands.loadBedwars(sender, command, args);
+				return MapCommands.loadBedwars(sender, cmd, args);
 			case "list-maps":
-				return MapCommands.listMaps(sender, command, args);
+				return MapCommands.listMaps(sender, cmd, args);
 			case "bw-create":
-				return BedwarsCommands.bwCreate(sender, command, args);
+				return BedwarsCommands.bwCreate(sender, cmd, args);
+			case "bw-start":
+				return BedwarsCommands.bwStart(sender, cmd, args);
 			case "bw-join":
-				return BedwarsCommands.bwJoin(sender, command, args);
+				return BedwarsCommands.bwJoin(sender, cmd, args);
 		}
 		return false;
 	}

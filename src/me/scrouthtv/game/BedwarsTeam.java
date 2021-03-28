@@ -1,17 +1,18 @@
 package me.scrouthtv.game;
 
 import org.bukkit.DyeColor;
+import org.bukkit.entity.Player;
 
 public class BedwarsTeam {
-	private final BedwarsPlayer[] players;
+	private final Player[] players;
 	
 	public BedwarsTeam(final int slots) {
-		players = new BedwarsPlayer[slots];
+		players = new Player[slots];
 	}
 	
 	public int getCurrentPlayers() {
 		int count = 0;
-		for (BedwarsPlayer p : players) {
+		for (Player p : players) {
 			if (p != null) count++;
 		}
 		
@@ -24,7 +25,7 @@ public class BedwarsTeam {
 	 *
 	 * @return whether joining was successful.
 	 */
-	public boolean playerJoin(BedwarsPlayer p) {
+	public boolean playerJoin(Player p) {
 		for (int i = 0; i < players.length; i++) {
 			if (players[i] == null) {
 				players[i] = p;
