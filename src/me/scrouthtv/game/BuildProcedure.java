@@ -1,8 +1,10 @@
 package me.scrouthtv.game;
 
+import me.scrouthtv.game.display.BedwarsBuildingDisplays;
 import me.scrouthtv.game.building.BedwarsBuildingItems;
 import me.scrouthtv.main.Main;
 import me.scrouthtv.maps.IMap;
+import me.scrouthtv.shop.Ingot;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -25,6 +27,7 @@ import javax.annotation.Nullable;
 public class BuildProcedure implements BedwarsMapCreatorGui.CreatorFinishCallback {
 	private final Player p;
 	private BedwarsBuildingItems tools;
+	private BedwarsBuildingDisplays disps;
 	
 	private final IMap map;
 	private BedwarsMap bwmap;
@@ -95,6 +98,9 @@ public class BuildProcedure implements BedwarsMapCreatorGui.CreatorFinishCallbac
 		// 5. Give the player the building tools:
 		tools = new BedwarsBuildingItems(p, this);
 		tools.enterTools();
+		
+		disps = new BedwarsBuildingDisplays(this);
+		disps.updateSpawners();
 	}
 	
 	/**
@@ -119,6 +125,7 @@ public class BuildProcedure implements BedwarsMapCreatorGui.CreatorFinishCallbac
 		stage = BuildStage.STAGE_FINISHED;
 		
 		// 7. Teleport the player back to the hub:
+		disps.exit();
 		tools.exitTools();
 		p.setGameMode(GameMode.SURVIVAL);
 		p.teleport(Bukkit.getWorld("world").getSpawnLocation());
@@ -132,6 +139,8 @@ public class BuildProcedure implements BedwarsMapCreatorGui.CreatorFinishCallbac
 	
 	public void addSpawner(final BedwarsIngotSpawner spawner) {
 		bwmap.addSpawner(spawner);
+		disps.updateSpawners();
+		
 	}
 	
 	/**
@@ -145,6 +154,21 @@ public class BuildProcedure implements BedwarsMapCreatorGui.CreatorFinishCallbac
 		bwmap.setBedLocation(team, loc);
 	}
 	
+	/**
+	 * Modifies the specified spawner to use the specified options.
+	 * If the spawner is not a part of the currently built map,
+	 * or we're not in the building stage,
+	 * nothing happens.
+	 */
+	public void modifySpawner(BedwarsIngotSpawner spawner, Ingot resource, int amount, int tickSpeed) {
+		if (stage != BuildStage.STAGE_BUILDING) return;
+		if (!bwmap.getSpawners().contains(spawner)) return;
+		
+		spawner.setResource(resource);
+		spawner.setAmount(amount);
+		spawner.setTickSpeed(tickSpeed);
+	}
+	
 	@Nullable
 	public BedwarsMap getMap() {
 		return bwmap;
@@ -152,6 +176,22 @@ public class BuildProcedure implements BedwarsMapCreatorGui.CreatorFinishCallbac
 	
 	public Player getPlayer() {
 		return p;
+	}
+	
+	public void abort() {
+		switch (stage) {
+			case STAGE_INIT:
+			case STAGE_INVALID:
+				break;
+			case STAGE_CREATE:
+				p.closeInventory();
+			case STAGE_BUILDING:
+				disps.exit();
+				tools.exitTools();
+				Main.instance().getBuilders().unregisterBuilder(p);
+			case STAGE_FINISHED:
+				break;
+		}
 	}
 	
 	public static enum BuildStage {

@@ -18,7 +18,7 @@ public class BedwarsIngotSpawner implements ConfigurationSerializable {
 	private static final String AMOUNT_IDENT = "amount";
 	
 	private final Vector loc;
-	private final Ingot resource;
+	private Ingot resource;
 	private int tickSpeed;
 	private int amount;
 	
@@ -84,6 +84,26 @@ public class BedwarsIngotSpawner implements ConfigurationSerializable {
 	
 	public Ingot getResource() {
 		return resource;
+	}
+	
+	public int getTickSpeed() {
+		return tickSpeed;
+	}
+	
+	public int getAmount() {
+		return amount;
+	}
+	
+	protected void setTickSpeed(final int tickSpeed) {
+		this.tickSpeed = tickSpeed;
+	}
+	
+	protected void setAmount(final int amount) {
+		this.amount = amount;
+	}
+	
+	protected void setResource(final Ingot resource) {
+		this.resource = resource;
 	}
 	
 	@Override
