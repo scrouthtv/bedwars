@@ -8,6 +8,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class BedwarsIngotSpawner implements ConfigurationSerializable {
 	
@@ -83,5 +84,23 @@ public class BedwarsIngotSpawner implements ConfigurationSerializable {
 	
 	public Ingot getResource() {
 		return resource;
+	}
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(loc.hashCode(), resource, tickSpeed, amount);
+	}
+	
+	@Override
+	public boolean equals(final Object obj) {
+		if (obj == null) return false;
+		if (obj == this) return true;
+		if (obj instanceof BedwarsIngotSpawner) {
+			BedwarsIngotSpawner other = (BedwarsIngotSpawner) obj;
+			return this.loc.equals(other.loc) && this.resource == other.resource
+					&& this.tickSpeed == other.tickSpeed && this.amount == other.amount;
+		}
+		
+		return false;
 	}
 }
