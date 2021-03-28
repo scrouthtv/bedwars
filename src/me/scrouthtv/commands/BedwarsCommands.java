@@ -10,6 +10,14 @@ import org.bukkit.entity.Player;
 
 public class BedwarsCommands {
 	
+	private static String listMaps() {
+		String list = "";
+		for (BedwarsMap map : Main.instance().getMapRegistry().listMaps())
+			list += " " + map.getMap().toString();
+		
+		return list.substring(1);
+	}
+	
 	public static boolean bwCreate(final CommandSender sender, final Command cmd, final String[] args) {
 		if (args.length != 2) {
 			sender.sendMessage(ChatColor.RED + "Expected two parameters.");
@@ -17,8 +25,10 @@ public class BedwarsCommands {
 		}
 		
 		BedwarsMap map = Main.instance().getMapRegistry().getMap(args[0]);
-		if (map != null) {
+		if (map == null) {
 			sender.sendMessage(ChatColor.RED + "Unknown map.");
+			sender.sendMessage(ChatColor.GRAY + "Available maps:");
+			sender.sendMessage(ChatColor.GRAY + listMaps());
 			return false;
 		}
 		

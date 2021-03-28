@@ -172,6 +172,7 @@ public class BedwarsGame implements Listener {
 			final int team = properties.getTeamByBed(ev.getBlock().getLocation().toVector());
 			hasBed[team] = false;
 			everyPlayer(player -> UI.playBedDestroySound(player));
+			ev.setDropItems(false);
 		} else {
 			// a block of the map, don't destroy it
 			ev.setCancelled(true);

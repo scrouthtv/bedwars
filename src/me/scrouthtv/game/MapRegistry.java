@@ -33,6 +33,10 @@ public class MapRegistry implements IConfigurable {
 		maps.put(m.getMap(), m);
 	}
 	
+	public Collection<BedwarsMap> listMaps() {
+		return maps.values();
+	}
+	
 	@Override
 	public void loadConfig(final FileConfiguration config) {
 		System.out.println("Looking for these maps:");
