@@ -2,6 +2,7 @@ package me.scrouthtv.game;
 
 import me.scrouthtv.main.Main;
 import me.scrouthtv.maps.IMap;
+import me.scrouthtv.utils.Heads;
 import me.scrouthtv.utils.UI;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -33,8 +34,8 @@ public class BedwarsMapCreatorGui implements Listener {
 	}
 	
 	private static final ItemStack SAVE_ITEM = new ItemStack(Material.WRITABLE_BOOK);
-	private static final ItemStack INCREMENT = new ItemStack(Material.PLAYER_HEAD);
-	private static final ItemStack DECREMENT = new ItemStack(Material.PLAYER_HEAD);
+	private static final ItemStack INCREMENT = Heads.HEAD_ARROW_UP.clone();
+	private static final ItemStack DECREMENT = Heads.HEAD_ARROW_DOWN.clone();
 	private static final ItemStack TEAM_SIZE = new ItemStack(Material.CHAINMAIL_CHESTPLATE);
 	private static final ItemStack TEAM_NUMBER = new ItemStack(Material.GOLDEN_SWORD);
 	
@@ -45,15 +46,13 @@ public class BedwarsMapCreatorGui implements Listener {
 		meta.setDisplayName("Create map =>");
 		SAVE_ITEM.setItemMeta(meta);
 		
-		SkullMeta s = (SkullMeta) INCREMENT.getItemMeta();
-		s.setDisplayName("+1");
-		s.setOwner("MHF_ArrowUp");
-		INCREMENT.setItemMeta(s);
+		meta = INCREMENT.getItemMeta();
+		meta.setDisplayName("+1");
+		INCREMENT.setItemMeta(meta);
 		
-		s = (SkullMeta) DECREMENT.getItemMeta();
-		s.setDisplayName("-1");
-		s.setOwner("MHF_ArrowDown");
-		DECREMENT.setItemMeta(s);
+		meta =  DECREMENT.getItemMeta();
+		meta.setDisplayName("-1");
+		DECREMENT.setItemMeta(meta);
 	}
 	
 	public BedwarsMapCreatorGui(final IMap map) {
