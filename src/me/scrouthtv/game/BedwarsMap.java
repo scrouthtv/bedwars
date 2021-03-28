@@ -52,27 +52,6 @@ public class BedwarsMap implements ConfigurationSerializable, Cloneable {
 		Main.instance().getMapRegistry().registerMap(this);
 	}
 	
-	/**
-	 * Only for testing.
-	 */
-	public void NOPROD_changeValues() {
-		setTeamSize(2);
-		setTeamNumber(8);
-		spawners.add(new BedwarsIngotSpawner(new Vector(5.0, 120.0, 5.0), Ingot.INGOT_BRONZE));
-		spawners.get(0).setSpeed(20, 10);
-		spawners.add(new BedwarsIngotSpawner(new Vector(-5.0, 120.0, -5.0), Ingot.INGOT_SILVER));
-		spawners.get(0).setSpeed(5, 1);
-		
-		beds[0] = new Vector(1, 1, 1);
-		beds[1] = new Vector(-1, 15, 1);
-		beds[2] = new Vector(25, 25, 25);
-		beds[3] = new Vector(9, -12, 33);
-		beds[4] = new Vector(12, 182, 98);
-		beds[5] = new Vector(2, 58, 2);
-		beds[6] = new Vector(11, 12, 13);
-		beds[7] = new Vector(0, 0, 0);
-	}
-	
 	public BedwarsGame createGame(String name) {
 		return new BedwarsGame(this, name);
 	}
