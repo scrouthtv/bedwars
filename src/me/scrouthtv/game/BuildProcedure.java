@@ -7,6 +7,8 @@ import me.scrouthtv.maps.IMap;
 import me.scrouthtv.shop.Ingot;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.GameRule;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -66,11 +68,25 @@ public class BuildProcedure implements BedwarsMapCreatorGui.CreatorFinishCallbac
 		if (stage != BuildStage.STAGE_INIT) return;
 		
 		stage = BuildStage.STAGE_CREATE;
+		setupWorld(map.getWorld());
 		
 		// Open the gui - step 2:
 		BedwarsMapCreatorGui gui = new BedwarsMapCreatorGui(map);
 		gui.setCallback(this);
 		gui.show(p);
+	}
+	
+	private void setupWorld(World w) {
+		w.setTime(1000);
+		w.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
+		w.setGameRule(GameRule.DISABLE_RAIDS, true);
+		w.setGameRule(GameRule.DO_FIRE_TICK, false);
+		w.setGameRule(GameRule.DO_INSOMNIA, false);
+		w.setGameRule(GameRule.DO_MOB_SPAWNING, false);
+		w.setGameRule(GameRule.DO_PATROL_SPAWNING, false);
+		w.setGameRule(GameRule.DO_TRADER_SPAWNING, false);
+		w.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+		w.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
 	}
 	
 	public BuildStage getStage() {
