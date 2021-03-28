@@ -117,6 +117,10 @@ public class BedwarsMap implements ConfigurationSerializable, Cloneable {
 		return null;
 	}
 	
+	public List<BedwarsIngotSpawner> getSpawners() {
+		return new ArrayList<>(spawners);
+	}
+	
 	/**
 	 * Searches for the team who owns this bed.
 	 *
