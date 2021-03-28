@@ -17,6 +17,11 @@ public class BedwarsCommands {
 		}
 		
 		BedwarsMap map = Main.instance().getMapRegistry().getMap(args[0]);
+		if (map != null) {
+			sender.sendMessage(ChatColor.RED + "Unknown map.");
+			return false;
+		}
+		
 		BedwarsGame game = map.createGame(args[1]);
 		
 		if (game != null) {

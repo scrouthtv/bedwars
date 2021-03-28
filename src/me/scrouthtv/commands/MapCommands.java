@@ -77,12 +77,8 @@ public class MapCommands {
 		Main.instance().getMapRegistry().printMaps();
 		
 		try {
-			File bw = new File(Main.instance().getDataFolder(), "maps.yml");
-			bw.createNewFile();
-			FileConfiguration config = YamlConfiguration.loadConfiguration(bw);
-			Main.instance().getMapRegistry().storeConfig(config);
+			Main.instance().getMapRegistry().saveMaps();
 			sender.sendMessage(ChatColor.GREEN + "Success.");
-			config.save(bw);
 			
 			return true;
 		} catch (IOException ex) {
@@ -94,9 +90,7 @@ public class MapCommands {
 	}
 	
 	public static boolean loadBedwars(final CommandSender sender, final Command command, final String[] args) {
-		File bw = new File(Main.instance().getDataFolder(), "maps.yml");
-		FileConfiguration config = YamlConfiguration.loadConfiguration(bw);
-		Main.instance().getMapRegistry().loadConfig(config);
+		Main.instance().getMapRegistry().loadMaps();
 		
 		Main.instance().getMapRegistry().printMaps();
 		

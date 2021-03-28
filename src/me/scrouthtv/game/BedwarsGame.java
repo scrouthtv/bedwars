@@ -5,6 +5,7 @@ import me.scrouthtv.maps.IMap;
 import me.scrouthtv.utils.ColoredBed;
 import me.scrouthtv.utils.UI;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -61,7 +62,7 @@ public class BedwarsGame implements Listener {
 		if (teams[team].playerJoin(p)) {
 			Main.instance().getPlayerRegistry().registerPlayer(p, this);
 			p.setGameMode(GameMode.SURVIVAL);
-			p.teleport(properties.getSpectatorSpawnLocation());
+			p.teleport(inThisWorld(properties.getSpectatorSpawnLocation()));
 			return true;
 		} else {
 			return false;
@@ -105,7 +106,7 @@ public class BedwarsGame implements Listener {
 		everyPlayer(player -> player.setGameMode(GameMode.SURVIVAL));
 		for (int i = 0; i < teams.length; i++) {
 			final int finalI = i; // idk
-			teams[i].everyPlayer(p -> p.teleport(properties.getSpawnLocation(finalI)));
+			teams[i].everyPlayer(p -> p.teleport(inThisWorld(properties.getSpawnLocation(finalI))));
 		}
 		
 		return true;
@@ -146,10 +147,10 @@ public class BedwarsGame implements Listener {
 		
 		if (hasBed[team]) {
 			// respawn them:
-			p.teleport(properties.getSpawnLocation(team));
+			p.teleport(inThisWorld(properties.getSpawnLocation(team)));
 			p.getInventory().clear();
 		} else {
-			p.teleport(properties.getSpectatorSpawnLocation());
+			p.teleport(inThisWorld(properties.getSpectatorSpawnLocation()));
 			p.getInventory().clear();
 			p.setGameMode(GameMode.SPECTATOR);
 		}
@@ -177,6 +178,14 @@ public class BedwarsGame implements Listener {
 		}
 	}
 	
+	private Location inThisWorld(Vector v) {
+		return new Location(world.getWorld(), v.getX(), v.getY(), v.getZ());
+	}
+	
+	private Location inThisWorld(Location l) {
+		return inThisWorld(l.toVector());
+	}
+	
 	protected void everyPlayer(Consumer<Player> thing) {
 		for (BedwarsTeam team : teams) team.everyPlayer(thing);
 	}
@@ -185,14 +194,16 @@ public class BedwarsGame implements Listener {
 		return name;
 	}
 	
+	/**
+	 * Checks if
+	 *  - the game hasn't been played yet
+	 *  - at least one player has joined
+	 */
 	public boolean canStart() {
 		if (state != GameState.STATE_INIT) return false;
+		if (currentPlayers() < 1) return false;
 		
 		return true;
-	}
-	
-	public BedwarsMap getProperties() {
-		return properties;
 	}
 	
 	public IMap getWorld() {

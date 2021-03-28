@@ -27,10 +27,9 @@ public class GameRegistry implements Listener {
 	 */
 	@Nullable
 	public BedwarsGame getGame(World w) {
-		for (BedwarsGame games : games.values()) {
-			if (games.getWorld().getWorld().equals(w)) {
-				return games;
-			}
+		for (BedwarsGame game : games.values()) {
+			if (game.getWorld().equals(w))
+				return game;
 		}
 		
 		return null;

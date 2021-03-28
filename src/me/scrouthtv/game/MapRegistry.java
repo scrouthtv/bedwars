@@ -5,8 +5,11 @@ import me.scrouthtv.main.Main;
 import me.scrouthtv.maps.IMap;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import javax.annotation.Nullable;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 public class MapRegistry implements IConfigurable {
@@ -72,6 +75,30 @@ public class MapRegistry implements IConfigurable {
 		serial.put(BWMAP_IDENT, bwmap.serialize());
 		
 		return serial;
+	}
+	
+	private static final String DEFAULT_SAVE_NAME = "maps.yml";
+	
+	public void saveMaps() throws IOException {
+		saveMaps(DEFAULT_SAVE_NAME);
+	}
+	
+	public void saveMaps(String file) throws IOException {
+		File bw = new File(Main.instance().getDataFolder(), file);
+		bw.createNewFile();
+		FileConfiguration config = YamlConfiguration.loadConfiguration(bw);
+		storeConfig(config);
+		config.save(bw);
+	}
+	
+	public void loadMaps() {
+		loadMaps(DEFAULT_SAVE_NAME);
+	}
+	
+	public void loadMaps(String file) {
+		final File f = new File(Main.instance().getDataFolder(), file);
+		FileConfiguration config = YamlConfiguration.loadConfiguration(f);
+		loadConfig(config);
 	}
 	
 }

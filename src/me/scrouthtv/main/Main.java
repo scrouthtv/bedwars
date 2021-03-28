@@ -15,6 +15,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.IOException;
+
 public class Main extends JavaPlugin implements CommandExecutor {
 	
 	private static Main instance;
@@ -51,6 +53,7 @@ public class Main extends JavaPlugin implements CommandExecutor {
 		mapManager.loadConfig(getConfig());
 		
 		mapRegistry = new MapRegistry();
+		mapRegistry.loadMaps();
 		
 		builders = new BuilderRegistry();
 		
@@ -89,6 +92,14 @@ public class Main extends JavaPlugin implements CommandExecutor {
 		
 		mapManager.storeConfig(getConfig());
 		saveConfig();
+		
+		try {
+			mapRegistry.saveMaps();
+		} catch (IOException ex) {
+			System.out.println("WARNING: Maps couldn't be saved:");
+			ex.printStackTrace();
+			System.out.println("All changes will be lost!");
+		}
 	}
 	
 	@Override
