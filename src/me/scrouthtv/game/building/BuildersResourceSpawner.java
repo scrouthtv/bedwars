@@ -3,11 +3,11 @@ package me.scrouthtv.game.building;
 import me.scrouthtv.game.BedwarsIngotSpawner;
 import me.scrouthtv.game.BuildProcedure;
 import me.scrouthtv.shop.Ingot;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
@@ -62,13 +62,15 @@ public class BuildersResourceSpawner implements BuildingItem {
 	public void onInteract(PlayerInteractEvent ev) {
 		if (ev.getPlayer() == null || ev.getPlayer().getInventory().getItemInMainHand() == null) return;
 		if (!ev.getPlayer().equals(holder)) return;
+		if (ev.getHand() != EquipmentSlot.HAND) return;
 		if (!ev.getPlayer().getInventory().getItemInMainHand().equals(is[resource])) return;
 		
 		if (ev.getClickedBlock() == null || ev.getBlockFace() == null) return;
 		Vector block = ev.getClickedBlock().getRelative(ev.getBlockFace()).getLocation().toVector();
-		double x = (block.getX() % 1) + 0.5;
-		double z = (block.getZ() % 1) + 0.5;
-		double y = (block.getY() % 1) + 0.2;
+		System.out.println(block);
+		double x = block.getX() - (block.getX() % 1) + 0.5;
+		double y = block.getY() - (block.getY() % 1) + 0.2;
+		double z = block.getZ() - (block.getZ() % 1) + 0.5;
 		Vector target = new Vector(x, y, z);
 		
 		ctx.addSpawner(new BedwarsIngotSpawner(target, Ingot.values()[resource]));
