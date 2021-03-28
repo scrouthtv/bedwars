@@ -4,6 +4,7 @@ import me.scrouthtv.commands.BedwarsCommands;
 import me.scrouthtv.commands.IngotCommands;
 import me.scrouthtv.commands.MapCommands;
 import me.scrouthtv.game.BedwarsIngotSpawner;
+import me.scrouthtv.game.BuildProcedure;
 import me.scrouthtv.game.BuilderRegistry;
 import me.scrouthtv.game.MapRegistry;
 import me.scrouthtv.maps.IMapManager;
@@ -69,6 +70,8 @@ public class Main extends JavaPlugin implements CommandExecutor {
 	@Override
 	public void onDisable() {
 		getServer().getConsoleSender().sendMessage(ChatColor.BLUE + "Stopping Bedwars 1");
+		
+		builders.closeAll();
 		
 		mapManager.storeConfig(getConfig());
 		saveConfig();

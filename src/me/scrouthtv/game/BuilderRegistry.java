@@ -21,4 +21,10 @@ public class BuilderRegistry {
 	void unregisterBuilder(final Player p) {
 		builders.remove(p);
 	}
+	
+	public void closeAll() {
+		for (BuildProcedure proc : builders.values()) {
+			proc.abort();
+		}
+	}
 }
