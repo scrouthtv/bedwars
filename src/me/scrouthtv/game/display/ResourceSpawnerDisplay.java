@@ -38,6 +38,7 @@ public class ResourceSpawnerDisplay implements Listener, ResourceSpawnerSettings
 		item.setCustomNameVisible(true);
 		item.setPickupDelay(20);
 		item.setVelocity(new Vector(0, 0, 0));
+		item.setGravity(false);
 		update();
 		
 		Bukkit.getPluginManager().registerEvents(this, Main.instance());
