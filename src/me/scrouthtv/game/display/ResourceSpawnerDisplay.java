@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.util.Vector;
 
 import javax.annotation.Nullable;
@@ -65,6 +66,13 @@ public class ResourceSpawnerDisplay implements Listener, ResourceSpawnerSettings
 		gui = new ResourceSpawnerSettings(spawner);
 		gui.setCallback(this);
 		gui.open(p);
+	}
+	
+	@EventHandler
+	public void onDespawn(ItemDespawnEvent ev) {
+		if (ev.getEntity() != item) return;
+		
+		ev.setCancelled(true);
 	}
 	
 	@Override
